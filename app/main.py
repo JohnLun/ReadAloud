@@ -1,6 +1,11 @@
 """Application entrypoint."""
 
+from fastapi import FastAPI
 
-def run() -> None:
-    """Do nothing."""
-    pass
+app = FastAPI()
+
+
+@app.get("/")
+def root() -> dict[str, str]:
+    """Return hello world."""
+    return {"message": "Hello, world!"}
