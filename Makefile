@@ -11,7 +11,13 @@ lint:
 	mypy
 
 .ONESHELL:
-.PHONY: install
+.PHONY: test
+test:
+	. venv/bin/activate
+	pytest
+
+.ONESHELL:
+.PHONY: run
 run:
 	. venv/bin/activate
 	python app.py
