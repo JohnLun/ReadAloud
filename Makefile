@@ -5,6 +5,7 @@ install:
 	python3.10 -m venv venv
 	. venv/bin/activate
 	pip install -r requirements.txt
+	pre-commit install
 
 .PHONY: lint
 lint:
@@ -15,7 +16,12 @@ lint:
 .PHONY: test
 test:
 	. venv/bin/activate
-	pytest
+	python -m pytest
+
+.PHONY: coverage
+coverage:
+	. venv/bin/activate
+	python -m http.server --directory htmlcov
 
 .PHONY: run
 run:
