@@ -1,0 +1,6 @@
+[flake8]
+application_import_names = ReadAloud
+exclude =
+    .git,
+    __pycache__,
+    venv
