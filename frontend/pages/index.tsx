@@ -1,7 +1,9 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 const Home: NextPage = () => {
+  const router = useRouter();
   return (
     <div className="h-screen">
       <Head>
@@ -11,9 +13,11 @@ const Home: NextPage = () => {
       </Head>
 
       <main className="flex h-full justify-center items-center dark:bg-black">
-        <h1 className="text-5xl font-bold dark:text-white">
-          Welcome to ReadAloud.
-        </h1>
+        <div onClick={() => router.push("/read_upload")}>
+          <h1 className="text-5xl font-bold dark:text-white">
+            Welcome to ReadAloud.
+          </h1>
+        </div>
       </main>
     </div>
   );
