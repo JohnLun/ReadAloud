@@ -5,10 +5,17 @@ from http.client import BAD_REQUEST
 from PIL import Image
 
 from fastapi import FastAPI, HTTPException, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.library import convert_image_to_text
 
+
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*']
+)
 
 
 @app.get("/")
