@@ -17,8 +17,8 @@ const read_upload: NextPage = () => {
       throw Error("No File Selected");
     } else {
       data.append("file", fileRef.current.files[0]);
-
-      const result = await fetch("http://127.0.0.1:8000/image", {
+      const url: string = process.env.NEXT_PUBLIC_API_URL!;
+      const result = await fetch(url, {
         method: "POST",
         body: data,
       });
