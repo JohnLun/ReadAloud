@@ -2,6 +2,12 @@ import type { NextPage } from "next";
 import { useRef } from "react";
 import React from "react";
 
+const read_aloud = (text: string): void => {
+  const message = new SpeechSynthesisUtterance();
+  message.text = text;
+  window.speechSynthesis.speak(message);
+};
+
 const read_upload: NextPage = () => {
   const fileRef = useRef<HTMLInputElement>(null);
   const submit = async (e: any) => {
@@ -17,6 +23,7 @@ const read_upload: NextPage = () => {
         body: data,
       });
       const text = await result.json();
+      read_aloud(text.text);
       console.log(text);
     }
   };
