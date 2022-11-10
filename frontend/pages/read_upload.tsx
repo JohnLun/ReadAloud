@@ -33,13 +33,13 @@ const read_upload: NextPage = () => {
         type="submit"
         value="ReadAloud"
         onClick={submit}
-        className="cursor-pointer flex w-1/2 text-5xl font-bold h-full justify-center items-center focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 rounded-lg px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
+        className="cursor-pointer flex w-1/2 text-5xl font-bold h-full justify-center items-center focus:outline-none text-brown-900 bg-papyrus-200 hover:bg-papyrus-300 focus:ring-4 focus:ring-purple-300 rounded-lg px-5 py-2.5 mb-2"
       />
 
       <div className="flex justify-center items-center w-1/2">
         <label
           htmlFor="dropzone-file"
-          className="flex flex-col justify-center items-center w-full h-full bg-yellow-400 rounded-lg border-2 border-yellow-400 border-dashed cursor-pointer dark:hover:bg-yellow-500 dark:bg-yellow-500 hover:bg-yellow-500 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+          className="flex flex-col justify-center items-center w-full h-full bg-brown-900 rounded-lg border-2 border-yellow-400 border-dashed cursor-pointer hover:bg-brown-800"
         >
           <div className="flex flex-col justify-center items-center pt-5 pb-6">
             <svg
