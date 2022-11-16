@@ -5,7 +5,7 @@ import NavBar from "react";
 
 const read_upload: NextPage = () => {
   const fileRef = useRef<HTMLInputElement>(null);
-  var fileName;
+  let fileName;
   const submit = async (e: any) => {
     e.preventDefault();
     const data = new FormData();
