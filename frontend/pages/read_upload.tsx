@@ -1,161 +1,152 @@
 import type { NextPage } from "next";
-import { useRef } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 import React from "react";
-import NavBar from "react";
+
+interface TabProps {
+  value: string;
+  onClick?: () => void;
+}
+const Tab = (props: TabProps) => (
+  <button
+    type="button"
+    className="w-full text-white font-bold mt-1 block px-3 py-2 bg-brown-700 rounded-md text-sm shadow-sm focus:bg-brown-900 hover:bg-brown-800"
+    onClick={props.onClick}
+  >
+    {props.value}
+  </button>
+);
+
+interface UploadAreaProps {
+  submit: (e: ChangeEvent, fileRef: React.RefObject<HTMLInputElement>) => void;
+}
+const UploadArea = (props: UploadAreaProps) => {
+  const fileRef = useRef<HTMLInputElement>(null);
+  return (
+    <form className="bg-papyrus-200 rounded-lg p-4 m-0 hover:bg-papyrus-300">
+      <label htmlFor="dropzone-file">
+        <div className="flex flex-col justify-center items-center pt-5 pb-6 hover:cursor-pointer">
+          <svg
+            aria-hidden="true"
+            className="h-72 text-brown-900"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+            ></path>
+          </svg>
+          <p className="mb-2 text-xl text-brown-900 dark:text-white">
+            Click to upload or drag and drop
+          </p>
+          <p className="font-bold text-lg text-brown-900 dark:text-white">
+            .png, .jpg, .gif, .docx, or .pdf
+          </p>
+          <p className="text-lg text-brown-900 dark:text-white">
+            (images: max. 800 x 400px)
+          </p>
+        </div>
+        <input
+          id="dropzone-file"
+          type="file"
+          className="hidden"
+          ref={fileRef}
+          onChange={(e: ChangeEvent) => props.submit(e, fileRef)}
+        />
+      </label>
+    </form>
+  );
+};
+
+interface InterfacePanelProps {
+  submit: (e: ChangeEvent, fileRef: React.RefObject<HTMLInputElement>) => void;
+}
+const InputPanel = (props: InterfacePanelProps) => {
+  return (
+    <div className="w-full px-4 mdmin:border-r-2 border-r-brown-800">
+      <div className="w-full py-2 truncate">
+        <div className="py-2 text-3xl font-bold text-brown-900">ReadAloud</div>
+        <div className="flex grid-cols-3 gap-2 ">
+          <Tab value="Website URL" />
+          <Tab value="Text" />
+          <Tab value="File Upload" />
+        </div>
+      </div>
+      <UploadArea submit={props.submit} />
+    </div>
+  );
+};
+
+const PlayButton = () => (
+  <button className="flex justify-center items-center w-48 h-48 rounded-full bg-papyrus-200 hover:bg-papyrus-300 focus:outline-none">
+    <div className="ml-4 w-0 h-0 border-b-transparent border-l-brown-900 border-t-transparent border-r-transparent border-solid border-t-[3rem] border-r-0 border-b-[3rem] border-l-[6rem]"></div>
+  </button>
+);
+
+interface ResultsPanelProps {
+  fileName: string;
+  fileText: string;
+}
+const ResultsPanel = (props: ResultsPanelProps) => {
+  return (
+    <div className="w-full h-full">
+      <div className="px-4">
+        <div className="font-bold text-xl text-brown-800 py-10">
+          {props.fileName}
+        </div>
+        <div className="overflow-y-auto text-brown-800">{props.fileText}</div>
+        <div className="mt-8 mb-8 flex justify-center items-center">
+          <PlayButton />
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const read_upload: NextPage = () => {
-  const fileRef = useRef<HTMLInputElement>(null);
-  let fileName;
-  const submit = async (e: any) => {
-    e.preventDefault();
-    const data = new FormData();
-    if (!fileRef.current?.files) {
-      throw Error("No File Selected");
-    } else {
-      data.append("file", fileRef.current.files[0]);
-      fileName = fileRef.current.files[0].name;
-      console.log(fileName);
-      document.getElementById("fileName")!.innerHTML = fileName;
-      const result = await fetch("http://127.0.0.1:8000/image", {
-        method: "POST",
-        body: data,
-      });
-      const text = await result.json();
-      document.getElementById("fileText")!.innerHTML = text.text;
-      console.log(text);
-    }
-  };
-  return (
-    <form className="bg-[#fff8ea] flex h-screen">
-      <div className="w-1/2 h-full px-4">
-        <div className="w-4/6">
-          <div className="w-full py-2 truncate">
-            <div className="py-2 text-3xl font-bold text-[#594545]">
-              ReadAloud
-            </div>
-            <div className="flex grid-cols-3 gap-2 ">
-              <button
-                type="button"
-                className="w-1/6 text-white mt-1 block w-full px-3 py-2 bg-[#9e7676] rounded-md text-sm shadow-sm focus:bg-[#594545] hover:bg-[#866363]"
-              >
-                Website URL
-              </button>
-              <button
-                type="button"
-                className="w-1/6 text-white mt-1 block w-full px-3 py-2 bg-[#9e7676] rounded-md text-sm shadow-sm focus:bg-[#594545] hover:bg-[#866363]"
-              >
-                Text
-              </button>
-              <button
-                type="button"
-                className="truncate w-1/6 text-white mt-1 block w-full px-3 py-2 bg-[#9e7676] rounded-md text-sm shadow-sm focus:bg-[#594545] hover:bg-[#866363]"
-              >
-                File Upload
-              </button>
-            </div>
-          </div>
-          <div className="bg-[#ecded3] rounded-lg m-0">
-            <label htmlFor="dropzone-file" className="bg-[#ecded3]">
-              <div className="flex flex-col justify-center items-center pt-5 pb-6">
-                <svg
-                  aria-hidden="true"
-                  className="h-full text-[#5a4646]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                  ></path>
-                </svg>
-                <p className="mb-2 text-xl text-[#5a4646] dark:text-white">
-                  <span className="font-semibold">Click to upload</span> or drag
-                  and drop
-                </p>
-                <p className="text-lg text-[#5a4646] dark:text-white">
-                  SVG, PNG, JPG or GIF (MAX. 800x400px)
-                </p>
-              </div>
-              <input
-                id="dropzone-file"
-                type="file"
-                className="hidden"
-                ref={fileRef}
-                onChange={submit}
-              />
-            </label>
-          </div>
-        </div>
-      </div>
-      <div className="w-1/2 h-full border border-l-2 border-l-[#b4a7a0]">
-        <div className="px-4">
-          <div className="font-bold text-xl text-[#594545] py-10" id="fileName">
-            {fileName}
-          </div>
-          <div
-            className="h-80 overflow-auto text-[#594545] w-5/6"
-            id="fileText"
-          ></div>
-          <div>
-            <button className="w-24 h-24 rounded-full bg-blue-500 focus:outline-none">
-              <i className="fa fa-play fa-2x text-white" id="play-btn"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    </form>
-    // <form className="flex h-screen">
-    //   <input
-    //     type="submit"
-    //     value="ReadAloud"
-    //     onClick={submit}
-    //     className="cursor-pointer flex w-1/2 text-5xl font-bold h-full justify-center items-center focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 rounded-lg px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
-    //   />
+  const [fileName, setFileName] = useState<string>("");
+  const [fileText, setFileText] = useState<string>("");
 
-    //   <div className="flex justify-center items-center w-1/2">
-    //     <label
-    //       htmlFor="dropzone-file"
-    //       className="flex flex-col justify-center items-center w-full h-full bg-yellow-400 rounded-lg border-2 border-yellow-400 border-dashed cursor-pointer dark:hover:bg-yellow-500 dark:bg-yellow-500 hover:bg-yellow-500 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-    //     >
-    //       <div className="flex flex-col justify-center items-center pt-5 pb-6">
-    //         <svg
-    //           aria-hidden="true"
-    //           className="h-full text-white"
-    //           fill="none"
-    //           stroke="currentColor"
-    //           viewBox="0 0 24 24"
-    //           xmlns="http://www.w3.org/2000"
-    //         >
-    //           <path
-    //             strokeLinecap="round"
-    //             strokeLinejoin="round"
-    //             strokeWidth="2"
-    //             d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-    //           ></path>
-    //         </svg>
-    //         <p className="mb-2 text-xl text-white dark:text-white">
-    //           <span className="font-semibold">Click to upload</span> or drag and
-    //           drop
-    //         </p>
-    //         <p className="text-lg text-white dark:text-white">
-    //           SVG, PNG, JPG or GIF (MAX. 800x400px)
-    //         </p>
-    //       </div>
-    //       <input
-    //         id="dropzone-file"
-    //         type="file"
-    //         className="hidden"
-    //         ref={fileRef}
-    //       />
-    //     </label>
-    //   </div>
-    // </form>
+  const submit = async (
+    e: ChangeEvent,
+    fileRef: React.RefObject<HTMLInputElement>
+  ) => {
+    e.preventDefault();
+
+    if (!fileRef.current?.files) {
+      throw Error("No file selected.");
+    }
+
+    const data = new FormData();
+    data.append("file", fileRef.current.files[0]);
+    setFileName(fileRef.current.files[0].name);
+
+    const url = process.env.NEXT_PUBLIC_API_URL + "/image";
+    if (!url) {
+      throw Error(
+        "Frontend server error (must set environment variable NEXT_PUBLIC_API_URL)."
+      );
+    }
+
+    const resultRaw = await fetch(url, {
+      method: "POST",
+      body: data,
+    });
+    const resultJson = await resultRaw.json();
+
+    setFileText(resultJson.text);
+  };
+
+  return (
+    <div className="bg-papyrus-100 flex mdmax:flex-wrap min-h-screen">
+      <InputPanel submit={submit} />
+      <ResultsPanel fileName={fileName} fileText={fileText} />
+    </div>
   );
 };
 
 export default read_upload;
-
