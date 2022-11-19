@@ -1,11 +1,21 @@
 """Library functions for calling in application code."""
 
-import locale
+# New additions:
+# PDF Reader --> Requires PyPDF2.
+# Docx reader --> Requires python-docx
+# Excel file reader --> Requires pandas 
+# MP3 file reader and player --> Requires pygame
 
 from PIL import Image
+import time
 
-# flake8: noqa
-locale.setlocale(locale.LC_ALL, "C")
+from pandas import DataFrame
+from pygame import mixer
+import PyPDF2
+import docx
+import pandas as pd
+
+
 
 from tesserocr import PyTessBaseAPI
 
@@ -16,3 +26,47 @@ def convert_image_to_text(image: Image) -> str:
         api.SetImage(image)
         text: str = api.GetUTF8Text()
         return text
+
+
+def take_in_MP3(name):
+    mixer.init()
+    # Load the name of the MP3 file that is to be subsequently played.
+    mixer.music.load(name)
+    mixer.music.play()
+    # Wait for the audio file to stop playing before exiting the function. This addition prevents the function from prematurely ending the audio.
+    while mixer.music.get_busy():
+        time.sleep(1)
+
+def convert_PDF_to_text(pdfname):
+    # creating a pdf file object
+    pdf_File_Obj = open(pdfname + '.pdf', 'rb')
+
+    # creating a pdf reader object
+    pdf_Reader = PyPDF2.PdfFileReader(pdf_File_Obj)
+
+    # printing number of pages in pdf file
+    print(pdf_Reader.numPages)
+
+    # creating a page object
+    pageObj = pdf_Reader.getPage(0)
+
+    # extracting text from page
+    print(pageObj.extractText())
+
+    # closing the pdf file object
+    pdf_File_Obj.close()
+
+
+def convert_docx_to_plain_text(name) -> str:
+        doc = docx.Document(name + '.docx')
+        fullText = []
+        for para in doc.paragraphs:
+            fullText.append(para.text)
+        return '\n'.join(fullText)
+
+
+def convert_xlsx_to_plain_test(name) -> DataFrame:
+    # Using a DataFrame object here to print out all of the columns and rows of a .xlsx file.
+    df = pd.read_excel(name + '.xlsx')
+    return df
+
