@@ -83,3 +83,7 @@ watchfiles==0.17.0
 wcwidth==0.2.5
 websockets==10.3
 wrapt==1.14.1
+pygame==2.1.2
+python-docx==0.8.11
+PyPDF2==2.11.1
+pandas==1.5.1
