@@ -1,21 +1,24 @@
 """Library functions for calling in application code."""
 
-import locale
 from http.client import HTTPException
 
-from PIL import Image
-import time
-
-from pandas import DataFrame
-from pygame import mixer
 import PyPDF2
+
 import docx
+
 import pandas as pd
+
 import imghdr
 
+import time
+
+from PIL import Image
+
+from pandas import DataFrame
+
+from pygame import mixer
 
 from tesserocr import PyTessBaseAPI
-
 
 
 def convert_image_to_text(image: Image) -> str:
@@ -29,7 +32,7 @@ def convert_image_to_text(image: Image) -> str:
         return text
 
 
-def take_in_MP3(name) -> str:
+def take_in_mp3(name) -> str:
     mixer.init()
     # Load the name of the MP3 file that is to be subsequently played.
     mixer.music.load(name)
@@ -38,35 +41,35 @@ def take_in_MP3(name) -> str:
     while mixer.music.get_busy():
         time.sleep(1)
 
-def convert_PDF_to_text(pdfname) -> str:
+
+def convert_pdf_to_text(name) -> str:
     # creating a pdf file object
-    pdf_File_Obj = open(pdfname + '.pdf', 'rb')
+    pdf_file_obj = open(name + '.pdf', 'rb')
 
     # creating a pdf reader object
-    pdf_Reader = PyPDF2.PdfFileReader(pdf_File_Obj)
+    pdf_reader = PyPDF2.PdfFileReader(pdf_file_obj)
 
     # printing number of pages in pdf file
-    print(pdf_Reader.numPages)
+    print(pdf_reader.numPages)
 
     # creating a page object
-    pageObj = pdf_Reader.getPage(0)
+    page_obj = pdf_reader.getPage(0)
 
     # extracting text from page
-    print(pageObj.extractText())
+    print(page_obj.extractText())
 
     # closing the pdf file object
-    pdf_File_Obj.close()
+    pdf_file_obj.close()
 
 
 def convert_docx_to_plain_text(name) -> str:
-        doc = docx.Document(name + '.docx')
-        fullText = []
-        for para in doc.paragraphs:
-            fullText.append(para.text)
-        return '\n'.join(fullText)
+    doc = docx.Document(name + '.docx')
+    full_text = []
+    for para in doc.paragraphs:
+        full_text.append(para.text)
+    return '\n'.join(full_text)
 
 
 def convert_xlsx_to_plain_test(name) -> DataFrame:
     df = pd.read_excel(name + '.xlsx')
     return df
-
