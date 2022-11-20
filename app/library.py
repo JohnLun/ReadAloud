@@ -1,8 +1,4 @@
 """Library functions for calling in application code."""
-# pylint: skip-file 
-# flake8: noqa
-
-# type: ignore
 
 import locale
 from http.client import HTTPException
