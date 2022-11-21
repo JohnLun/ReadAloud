@@ -47,19 +47,19 @@ def test_tts_to_text() -> None:
     """Checks that TTS works and the MP3 
     function returns the necessary data."""
     assert (
-        app.library.tts_to_mp3(app.library.convert_pdf_to_text('data/Document'))
+        app.library.tts_to_mp3(app.library.convert_pdf_to_text('tests/data/Document'))
     )
 
 
 def test_convert_docx_to_plain_text() -> None:
     """Checks that PDF is actually converted to plain text."""
     assert (
-        app.library.convert_docx_to_plain_text('data/doctest')
+        app.library.convert_docx_to_plain_text('tests/data/doctest')
     )
 
 
 def test_convert_xlsx_to_plain_text() -> None:
     """Test whether returned DataFrame is empty or not."""
     assert (
-        app.library.convert_xlsx_to_plain_test('data/ultimatetisito')
+        app.library.convert_xlsx_to_plain_test('tests/data/ultimatetisito')
     )
