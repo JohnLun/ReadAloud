@@ -21,9 +21,6 @@ from tesserocr import PyTessBaseAPI
 def convert_image_to_text(image: Image) -> str:
     """Extract text from a PIL Image."""
     with PyTessBaseAPI(path="./app") as api:
-        test = imghdr.what(image)
-        if test != 'png' and test != 'jpeg' and test != 'gif' and test != 'jpg':
-            raise HTTPException
         api.SetImage(image)
         text: str = api.GetUTF8Text()
         return text
