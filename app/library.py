@@ -1,21 +1,12 @@
 """Library functions for calling in application code."""
-# pylint: skip-file
-# flake8: noqa
+from PIL import Image
 
-# type: ignore
-
+import PyPDF2
 
 import docx
-import imghdr
-import pandas as pd
-import PyPDF2
+
 import pyttsx3
 
-from http.client import HTTPException
-
-import tesserocr
-from PIL import Image
-from pandas import DataFrame
 from tesserocr import PyTessBaseAPI
 
 
@@ -31,7 +22,6 @@ def tts_to_mp3(text):
     engine.runAndWait()
     with open("app/speech.mp3", "rb") as f:
         return f.read()
-
 
 
 def convert_image_to_text(image: Image) -> str:
