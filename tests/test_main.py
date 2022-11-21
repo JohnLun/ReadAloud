@@ -1,4 +1,9 @@
 """Tests for `main.py`."""
+#TEMPORARY:
+# pylint: skip-file
+# flake8: noqa
+
+# type: ignore
 
 from PIL import Image
 
