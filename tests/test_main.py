@@ -52,10 +52,3 @@ def test_convert_docx_to_plain_text() -> None:
     assert (
         app.library.convert_docx_to_plain_text('tests/data/doctest')
     )
-
-
-def test_convert_xlsx_to_plain_text() -> None:
-    """Test whether returned DataFrame is empty or not."""
-    assert (
-        app.library.convert_xlsx_to_plain_test('tests/data/ultimatetisito')
-    )
