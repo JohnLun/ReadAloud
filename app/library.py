@@ -1,64 +1,71 @@
-"""Library functions for calling in application code."""
+"""Application entrypoint."""
+
+from http.client import BAD_REQUEST
+
 from PIL import Image
 
-import PyPDF2
+from fastapi import FastAPI, HTTPException, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 
-import docx
+from app.library import convert_docx_to_plain_text
+from app.library import convert_image_to_text
+from app.library import convert_pdf_to_text
+from app.library import tts_to_mp3
 
-import pyttsx3
+import os
 
-from tesserocr import PyTessBaseAPI
+import random
 
+app = FastAPI()
 
-# Import the required module
-
-
-def tts_to_mp3(text):
-    """Save text to .mp3 file with TTS included."""
-    # Initialize the Pyttsx3 engine
-    engine = pyttsx3.init()
-    engine.save_to_file(text, 'app/speech.mp3')
-    # Wait until above command is not finished.
-    engine.runAndWait()
-    with open("app/speech.mp3", "rb") as f:
-        return f.read()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*']
+)
 
 
-def convert_image_to_text(image: Image) -> str:
-    """Extract text from a PIL Image."""
-    with PyTessBaseAPI(path="./app") as api:
-        api.SetImage(image)
-        text: str = api.GetUTF8Text()
-        return text
+@app.get("/")
+def root() -> dict[str, str]:
+    """Return hello world."""
+    return {"message": "Hello, world!"}
 
 
-def convert_pdf_to_text(name) -> str:
-    """Convert text within PDF file to plain text."""
-    # creating a pdf file object
-    pdf_file_obj = open(name, 'rb')
+@app.post("/image")
+def image(file: UploadFile) -> dict[str, str]:
+    """Accept an image file and output the text within the image."""
+    image_content_types = ("image/jpeg", "image/png")
+    if file.content_type not in image_content_types:
+        raise HTTPException(
+            status_code=BAD_REQUEST,
+            detail="Invalid file content type for image.",
+        )
+    image_data = Image.open(file.file)
+    text = convert_image_to_text(image_data)
 
-    # creating a pdf reader object
-    pdf_reader = PyPDF2.PdfFileReader(pdf_file_obj)
-
-    # printing number of pages in pdf file
-    print(pdf_reader.numPages)
-
-    # creating a page object
-    page_obj = pdf_reader.getPage(0)
-
-    # extracting text from page
-    text = page_obj.extractText()
-    print(page_obj.extractText())
-
-    # closing the pdf file object
-    pdf_file_obj.close()
-    return text
+    return {"text": text}
 
 
-def convert_docx_to_plain_text(name) -> str:
-    """Convert text within .docx to plain text."""
-    doc = docx.Document(name)
-    full_text = []
-    for para in doc.paragraphs:
-        full_text.append(para.text)
-    return '\n'.join(full_text)
+@app.post("/docx")
+def docx(file: UploadFile) -> dict[str, str]:
+    """Accept a .docx file name and output the text within it."""
+    contents = file.file.read()
+    random_name = random.choice("abcedfghijklmnopqrstuvwxyz%123456783")
+    with open(random_name + '.docx', 'wb') as f:
+        f.write(contents)
+        text = convert_docx_to_plain_text(random_name + '.docx')
+    f.close()
+    os.remove(random_name + '.docx')
+    return {"text": text, "mp3": tts_to_mp3(text)}
+
+
+@app.post("/pdf")
+def pdf(file: UploadFile) -> dict[str, str]:
+    """Accept a PDF file name and output the text within it."""
+    contents = file.file.read()
+    random_name = random.choice("abcedfghijklmnopqrstuvwxyz%123456783")
+    with open(random_name + '.pdf', 'wb') as f:
+        f.write(contents)
+        text = convert_pdf_to_text(random_name + '.pdf')
+    f.close()
+    os.remove(random_name + '.pdf')
+    return {"text": text, "mp3": tts_to_mp3(text)}
