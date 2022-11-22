@@ -1,12 +1,11 @@
 """Application entrypoint."""
 
+import os
 from http.client import BAD_REQUEST
 
-import os
+import random
 
 from PIL import Image
-
-import random
 
 from fastapi import FastAPI, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
