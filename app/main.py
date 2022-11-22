@@ -1,9 +1,8 @@
 """Application entrypoint."""
 
 import os
-from http.client import BAD_REQUEST
-
 import random
+from http.client import BAD_REQUEST
 
 from PIL import Image
 
