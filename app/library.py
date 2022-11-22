@@ -1,71 +1,79 @@
-"""Application entrypoint."""
-
-from http.client import BAD_REQUEST
+"""Tests for `main.py`."""
 
 from PIL import Image
 
-from fastapi import FastAPI, HTTPException, UploadFile
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import HTTPException, UploadFile
 
-from app.library import convert_docx_to_plain_text
-from app.library import convert_image_to_text
-from app.library import convert_pdf_to_text
-from app.library import tts_to_mp3
+import pytest
 
-import os
-
-import random
-
-app = FastAPI()
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=['*']
-)
+import app.library
+import app.main
 
 
-@app.get("/")
-def root() -> dict[str, str]:
-    """Return hello world."""
-    return {"message": "Hello, world!"}
+def test_root() -> None:
+    """Test the entrypoint's return message."""
+    assert app.main.root() == {"message": "Hello, world!"}
 
 
-@app.post("/image")
-def image(file: UploadFile) -> dict[str, str]:
-    """Accept an image file and output the text within the image."""
-    image_content_types = ("image/jpeg", "image/png")
-    if file.content_type not in image_content_types:
-        raise HTTPException(
-            status_code=BAD_REQUEST,
-            detail="Invalid file content type for image.",
-        )
-    image_data = Image.open(file.file)
-    text = convert_image_to_text(image_data)
-
-    return {"text": text}
+def test_convert_image_to_text() -> None:
+    """Test that the image can be converted."""
+    assert (
+            app.library.convert_image_to_text(
+                Image.open("tests/data/test.png"))
+            == "G Search with Google or enter address\n"
+    )
 
 
-@app.post("/docx")
-def docx(file: UploadFile) -> dict[str, str]:
-    """Accept a .docx file name and output the text within it."""
-    contents = file.file.read()
-    random_name = random.choice("abcedfghijklmnopqrstuvwxyz%123456783")
-    with open(random_name + '.docx', 'wb') as f:
-        f.write(contents)
-        text = convert_docx_to_plain_text(random_name + '.docx')
-    f.close()
-    os.remove(random_name + '.docx')
-    return {"text": text, "mp3": tts_to_mp3(text)}
+def test_image() -> None:
+    """Test that the image can be converted."""
+    with open("tests/data/test.png", "rb") as f:
+        assert app.main.image(
+            UploadFile(filename="test.png", file=f, content_type="image/png")
+        ) == {"text": "G Search with Google or enter address\n"}
 
 
-@app.post("/pdf")
-def pdf(file: UploadFile) -> dict[str, str]:
-    """Accept a PDF file name and output the text within it."""
-    contents = file.file.read()
-    random_name = random.choice("abcedfghijklmnopqrstuvwxyz%123456783")
-    with open(random_name + '.pdf', 'wb') as f:
-        f.write(contents)
-        text = convert_pdf_to_text(random_name + '.pdf')
-    f.close()
-    os.remove(random_name + '.pdf')
-    return {"text": text, "mp3": tts_to_mp3(text)}
+def test_image_failure() -> None:
+    """Invalid image raises an HTTP Exception."""
+    with open("tests/data/test.png", "rb") as f:
+        with pytest.raises(HTTPException):
+            app.main.image(UploadFile(filename="test.png", file=f))
+
+
+def test_tts_to_text() -> None:
+    """Checks that TTS works."""
+    assert (
+        app.library.tts_to_mp3(app.library.convert_pdf_to_text
+                               ('app/Document.pdf'))
+    )
+
+
+def test_convert_docx_to_plain_text() -> None:
+    """Checks PDF is converted to text."""
+    assert (
+        app.library.convert_docx_to_plain_text('tests/data/doctest.docx')
+    )
+
+
+def test_docx() -> None:
+    """Test that the docx can be converted."""
+    with open("tests/data/doctest.docx", "rb") as f:
+        assert app.main.docx(
+            UploadFile(filename="doctest.docx",
+                       file=f, content_type="doctest/docx")
+        ) == {"text": app.main.convert_docx_to_plain_text(
+            'tests/data/doctest.docx'), "mp3":
+                  app.main.tts_to_mp3(app.main.convert_docx_to_plain_text(
+                      'tests/data/doctest.docx'))}
+
+
+def test_pdf() -> None:
+    """Test that the PDF can be converted."""
+    with open('tests/data/Document.pdf', "rb") as f:
+        assert app.main.pdf(
+            UploadFile(filename="Document.pdf", file=f,
+                       content_type="Document/pdf")
+        ) == {"text": app.main.convert_pdf_to_text(
+            'tests/data/Document.pdf'), "mp3":
+                  app.main.tts_to_mp3(
+                      app.main.convert_pdf_to_text('tests/data/Document.pdf')
+                  )}
