@@ -5,11 +5,11 @@ import PyPDF2
 
 import docx
 
+import os
+
 import pyttsx3
 
 from tesserocr import PyTessBaseAPI
-
-import os
 
 
 # Import the required module
