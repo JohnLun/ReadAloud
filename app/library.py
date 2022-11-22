@@ -1,9 +1,9 @@
 """Library functions for calling in application code."""
 from PIL import Image
 
-import PyPDF2
-
 import os
+
+import PyPDF2
 
 import docx
 
