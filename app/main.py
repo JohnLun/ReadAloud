@@ -2,9 +2,10 @@
 
 from http.client import BAD_REQUEST
 
+import os
+
 from PIL import Image
 
-import os
 import random
 
 from fastapi import FastAPI, HTTPException, UploadFile
