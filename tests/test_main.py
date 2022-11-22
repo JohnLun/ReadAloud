@@ -58,9 +58,12 @@ def test_docx() -> None:
     """Test that the docx can be converted."""
     with open("tests/data/doctest.docx", "rb") as f:
         assert app.main.docx(
-            UploadFile(filename="doctest.docx", file=f, 
-                       content_type="doctest/docx")
-        ) == {"text": app.main.convert_docx_to_plain_text('doctest.docx')}
+            UploadFile(filename="doctest.docx",
+                       file=f, content_type="doctest/docx")
+        ) == {"text": app.main.convert_docx_to_plain_text(
+            'tests/data/doctest.docx'), "mp3":
+                  app.main.tts_to_mp3(app.main.convert_docx_to_plain_text(
+                      'tests/data/doctest.docx'))}
 
 
 def test_pdf() -> None:
@@ -69,4 +72,8 @@ def test_pdf() -> None:
         assert app.main.pdf(
             UploadFile(filename="Document.pdf", file=f,
                        content_type="Document/pdf")
-        ) == {"text": app.main.convert_pdf_to_text('Document.pdf')}
+        ) == {"text": app.main.convert_pdf_to_text(
+            'tests/data/Document.pdf'), "mp3":
+                  app.main.tts_to_mp3(
+                      app.main.convert_pdf_to_text('tests/data/Document.pdf')
+                  )}
