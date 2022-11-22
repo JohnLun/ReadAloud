@@ -4,6 +4,7 @@ from PIL import Image
 
 from fastapi import HTTPException, UploadFile
 
+import openpyxl
 import pytest
 
 import app.library
@@ -43,12 +44,28 @@ def test_tts_to_text() -> None:
     """Checks that TTS works."""
     assert (
         app.library.tts_to_mp3(app.library.convert_pdf_to_text
-                               ('tests/data/Document'))
+                               ('app/Document.pdf'))
     )
 
 
 def test_convert_docx_to_plain_text() -> None:
     """Checks PDF is converted to text."""
     assert (
-        app.library.convert_docx_to_plain_text('tests/data/doctest')
+        app.library.convert_docx_to_plain_text('tests/data/doctest.docx')
     )
+
+
+def test_docx() -> None:
+    """Test that the docx can be converted."""
+    with open("tests/data/doctest.docx", "rb") as f:
+        assert app.main.docx(
+            UploadFile(filename="doctest.docx", file=f, content_type="doctest/docx")
+        ) == {"text": app.main.convert_docx_to_plain_text('doctest.docx')}
+
+
+def test_pdf() -> None:
+    """Test that the PDF can be converted."""
+    with open('tests/data/Document.pdf', "rb") as f:
+        assert app.main.pdf(
+            UploadFile(filename="Document.pdf", file=f, content_type="Document/pdf")
+        ) == {"text": app.main.convert_pdf_to_text('Document.pdf')}
