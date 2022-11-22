@@ -1,79 +1,69 @@
-"""Tests for `main.py`."""
-
+"""Library functions for calling in application code."""
 from PIL import Image
 
-from fastapi import HTTPException, UploadFile
+import PyPDF2
 
-import pytest
+import docx
 
-import app.library
-import app.main
+import pyttsx3
 
+from tesserocr import PyTessBaseAPI
 
-def test_root() -> None:
-    """Test the entrypoint's return message."""
-    assert app.main.root() == {"message": "Hello, world!"}
+import os
 
 
-def test_convert_image_to_text() -> None:
-    """Test that the image can be converted."""
-    assert (
-            app.library.convert_image_to_text(
-                Image.open("tests/data/test.png"))
-            == "G Search with Google or enter address\n"
-    )
+# Import the required module
 
 
-def test_image() -> None:
-    """Test that the image can be converted."""
-    with open("tests/data/test.png", "rb") as f:
-        assert app.main.image(
-            UploadFile(filename="test.png", file=f, content_type="image/png")
-        ) == {"text": "G Search with Google or enter address\n"}
+def tts_to_mp3(text):
+    """Save text to .mp3 file with TTS included."""
+    # Initialize the Pyttsx3 engine
+    engine = pyttsx3.init()
+    engine.save_to_file(text, 'app/speech.mp3')
+    # Wait until above command is not finished.
+    engine.runAndWait()
+    with open("app/speech.mp3", "rb") as f:
+        final = f.read()
+    f.close()
+    os.remove('app/speech.mp3')
+    return final
 
 
-def test_image_failure() -> None:
-    """Invalid image raises an HTTP Exception."""
-    with open("tests/data/test.png", "rb") as f:
-        with pytest.raises(HTTPException):
-            app.main.image(UploadFile(filename="test.png", file=f))
+def convert_image_to_text(image: Image) -> str:
+    """Extract text from a PIL Image."""
+    with PyTessBaseAPI(path="./app") as api:
+        api.SetImage(image)
+        text: str = api.GetUTF8Text()
+        return text
 
 
-def test_tts_to_text() -> None:
-    """Checks that TTS works."""
-    assert (
-        app.library.tts_to_mp3(app.library.convert_pdf_to_text
-                               ('app/Document.pdf'))
-    )
+def convert_pdf_to_text(name) -> str:
+    """Convert text within PDF file to plain text."""
+    # creating a pdf file object
+    pdf_file_obj = open(name, 'rb')
+
+    # creating a pdf reader object
+    pdf_reader = PyPDF2.PdfFileReader(pdf_file_obj)
+
+    # printing number of pages in pdf file
+    print(pdf_reader.numPages)
+
+    # creating a page object
+    page_obj = pdf_reader.getPage(0)
+
+    # extracting text from page
+    text = page_obj.extractText()
+    print(page_obj.extractText())
+
+    # closing the pdf file object
+    pdf_file_obj.close()
+    return text
 
 
-def test_convert_docx_to_plain_text() -> None:
-    """Checks PDF is converted to text."""
-    assert (
-        app.library.convert_docx_to_plain_text('tests/data/doctest.docx')
-    )
-
-
-def test_docx() -> None:
-    """Test that the docx can be converted."""
-    with open("tests/data/doctest.docx", "rb") as f:
-        assert app.main.docx(
-            UploadFile(filename="doctest.docx",
-                       file=f, content_type="doctest/docx")
-        ) == {"text": app.main.convert_docx_to_plain_text(
-            'tests/data/doctest.docx'), "mp3":
-                  app.main.tts_to_mp3(app.main.convert_docx_to_plain_text(
-                      'tests/data/doctest.docx'))}
-
-
-def test_pdf() -> None:
-    """Test that the PDF can be converted."""
-    with open('tests/data/Document.pdf', "rb") as f:
-        assert app.main.pdf(
-            UploadFile(filename="Document.pdf", file=f,
-                       content_type="Document/pdf")
-        ) == {"text": app.main.convert_pdf_to_text(
-            'tests/data/Document.pdf'), "mp3":
-                  app.main.tts_to_mp3(
-                      app.main.convert_pdf_to_text('tests/data/Document.pdf')
-                  )}
+def convert_docx_to_plain_text(name) -> str:
+    """Convert text within .docx to plain text."""
+    doc = docx.Document(name)
+    full_text = []
+    for para in doc.paragraphs:
+        full_text.append(para.text)
+    return '\n'.join(full_text)
