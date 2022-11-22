@@ -17,7 +17,7 @@ def tts_to_mp3(text):
     """Save text to .mp3 file with TTS included."""
     # Initialize the Pyttsx3 engine
     engine = pyttsx3.init()
-    engine.save_to_file(text, 'speech.mp3')
+    engine.save_to_file(text, 'app/speech.mp3')
     # Wait until above command is not finished.
     engine.runAndWait()
     with open("app/speech.mp3", "rb") as f:
