@@ -58,8 +58,8 @@ def test_docx() -> None:
     """Test that the docx can be converted."""
     with open("tests/data/doctest.docx", "rb") as f:
         assert app.main.docx(
-            UploadFile(filename="doctest.docx",
-                       file=f, content_type="doctest/docx")
+            UploadFile(filename="doctest.docx", file=f, 
+                       content_type="doctest/docx")
         ) == {"text": app.main.convert_docx_to_plain_text('doctest.docx')}
 
 
