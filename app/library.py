@@ -3,9 +3,9 @@ from PIL import Image
 
 import PyPDF2
 
-import docx
-
 import os
+
+import docx
 
 import pyttsx3
 
