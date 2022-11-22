@@ -4,6 +4,9 @@ from http.client import BAD_REQUEST
 
 from PIL import Image
 
+import os
+import random
+
 from fastapi import FastAPI, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -11,10 +14,6 @@ from app.library import convert_docx_to_plain_text
 from app.library import convert_image_to_text
 from app.library import convert_pdf_to_text
 from app.library import tts_to_mp3
-
-import os
-
-import random
 
 app = FastAPI()
 
