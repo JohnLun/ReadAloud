@@ -51,7 +51,6 @@ def docx(file: UploadFile) -> dict[str, str]:
     with open(random_name + '.docx', 'wb') as f:
         f.write(contents)
         text = convert_docx_to_plain_text(random_name + '.docx')
-    f.close()
     os.remove(random_name + '.docx')
     return {"text": text, "mp3": tts_to_mp3(text)}
 
@@ -64,6 +63,5 @@ def pdf(file: UploadFile) -> dict[str, str]:
     with open(random_name + '.pdf', 'wb') as f:
         f.write(contents)
         text = convert_pdf_to_text(random_name + '.pdf')
-    f.close()
     os.remove(random_name + '.pdf')
     return {"text": text, "mp3": tts_to_mp3(text)}
