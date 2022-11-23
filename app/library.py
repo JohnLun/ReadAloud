@@ -21,7 +21,8 @@ def tts_to_mp3(text):
     # Wait until above command is not finished.
     engine.runAndWait()
     with open("app/speech.mp3", "rb") as f:
-        return f.read()
+        final = f.read()
+    return final
 
 
 def convert_image_to_text(image: Image) -> str:
@@ -35,7 +36,7 @@ def convert_image_to_text(image: Image) -> str:
 def convert_pdf_to_text(name) -> str:
     """Convert text within PDF file to plain text."""
     # creating a pdf file object
-    pdf_file_obj = open(name + '.pdf', 'rb')
+    pdf_file_obj = open(name, 'rb')
 
     # creating a pdf reader object
     pdf_reader = PyPDF2.PdfFileReader(pdf_file_obj)
@@ -57,7 +58,7 @@ def convert_pdf_to_text(name) -> str:
 
 def convert_docx_to_plain_text(name) -> str:
     """Convert text within .docx to plain text."""
-    doc = docx.Document(name + '.docx')
+    doc = docx.Document(name)
     full_text = []
     for para in doc.paragraphs:
         full_text.append(para.text)
