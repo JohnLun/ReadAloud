@@ -24,7 +24,6 @@ def tts_to_mp3(text):
     engine.runAndWait()
     with open("app/speech.mp3", "rb") as f:
         final = f.read()
-    f.close()
     os.remove('app/speech.mp3')
     return final
 
