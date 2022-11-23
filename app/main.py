@@ -50,7 +50,6 @@ def docx(file: UploadFile) -> dict[str, str]:
     with open(random_name + '.docx', 'wb') as f:
         f.write(contents)
         text = convert_docx_to_plain_text(random_name + '.docx')
-    
     return {"text": text, "mp3": tts_to_mp3(text)}
 
 
