@@ -43,7 +43,7 @@ def test_tts_to_text() -> None:
     """Checks that TTS works."""
     assert (
         app.library.tts_to_mp3(app.library.convert_pdf_to_text
-                               ('app/Document.pdf'))
+                               ('tests/data/Document.pdf'))
     )
 
 
