@@ -1,6 +1,5 @@
 """Application entrypoint."""
 
-import os
 import random
 from http.client import BAD_REQUEST
 
