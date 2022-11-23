@@ -1,6 +1,4 @@
 """Library functions for calling in application code."""
-import os
-
 from PIL import Image
 
 import PyPDF2
