@@ -8,6 +8,7 @@ install:
 	. venv/bin/activate
 	pip install -r requirements.txt
 	pre-commit install
+	mkdir -p /app/tmp
 
 .PHONY: lint
 lint:
