@@ -2,7 +2,7 @@
 
 .PHONY: install
 install:
-	sudo apt install libtesseract-dev libleptonica-dev
+	sudo apt install libtesseract-dev libleptonica-dev ffmpeg
 	sudo apt-get install espeak
 	python3.10 -m venv venv
 	. venv/bin/activate

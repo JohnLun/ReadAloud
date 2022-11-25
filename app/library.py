@@ -13,14 +13,14 @@ from tesserocr import PyTessBaseAPI
 # Import the required module
 
 
-def tts_to_mp3(text):
+def tts_to_mp3(text: str) -> bytes:
     """Save text to .mp3 file with TTS included."""
     # Initialize the Pyttsx3 engine
     engine = pyttsx3.init()
-    engine.save_to_file(text, 'app/speech.mp3')
+    engine.save_to_file(text, "app/tmp/speech.mp3")
     # Wait until above command is not finished.
     engine.runAndWait()
-    with open("app/speech.mp3", "rb") as f:
+    with open("app/tmp/speech.mp3", "rb") as f:
         final = f.read()
     return final
 
@@ -33,10 +33,10 @@ def convert_image_to_text(image: Image) -> str:
         return text
 
 
-def convert_pdf_to_text(name) -> str:
+def convert_pdf_to_text(name: str) -> str:
     """Convert text within PDF file to plain text."""
     # creating a pdf file object
-    pdf_file_obj = open(name, 'rb')
+    pdf_file_obj = open(name, "rb")
 
     # creating a pdf reader object
     pdf_reader = PyPDF2.PdfFileReader(pdf_file_obj)
@@ -56,10 +56,10 @@ def convert_pdf_to_text(name) -> str:
     return text
 
 
-def convert_docx_to_plain_text(name) -> str:
+def convert_docx_to_plain_text(name: str) -> str:
     """Convert text within .docx to plain text."""
     doc = docx.Document(name)
     full_text = []
     for para in doc.paragraphs:
         full_text.append(para.text)
-    return '\n'.join(full_text)
+    return "\n".join(full_text)

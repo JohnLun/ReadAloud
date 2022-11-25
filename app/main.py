@@ -14,10 +14,7 @@ from app.library import tts_to_mp3
 
 app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=['*']
-)
+app.add_middleware(CORSMiddleware, allow_origins=["*"])
 
 
 @app.get("/")
@@ -45,9 +42,12 @@ def image(file: UploadFile) -> dict[str, str]:
 def docx(file: UploadFile) -> dict[str, str]:
     """Accept a .docx file name and output the text within it."""
     contents = file.file.read()
-    with open("app/document.docx", 'wb') as f:
+    filename = "app/tmp/document.docx"
+
+    with open(filename, "wb") as f:
         f.write(contents)
-        text = convert_docx_to_plain_text("app/document.docx")
+        text = convert_docx_to_plain_text(filename)
+
     return {"text": text, "mp3": tts_to_mp3(text)}
 
 
@@ -55,7 +55,10 @@ def docx(file: UploadFile) -> dict[str, str]:
 def pdf(file: UploadFile) -> dict[str, str]:
     """Accept a PDF file name and output the text within it."""
     contents = file.file.read()
-    with open("app/file.pdf", 'wb') as f:
+    filename = "app/tmp/file.pdf"
+
+    with open(filename, "wb") as f:
         f.write(contents)
-        text = convert_pdf_to_text("app/file.pdf")
+        text = convert_pdf_to_text(filename)
+
     return {"text": text, "mp3": tts_to_mp3(text)}
