@@ -1,6 +1,5 @@
 """Application entrypoint."""
 
-import random
 from http.client import BAD_REQUEST
 
 from PIL import Image
@@ -46,10 +45,9 @@ def image(file: UploadFile) -> dict[str, str]:
 def docx(file: UploadFile) -> dict[str, str]:
     """Accept a .docx file name and output the text within it."""
     contents = file.file.read()
-    random_name = random.choice("abcedfghijklmnopqrstuvwxyz%123456783")
-    with open(random_name + '.docx', 'wb') as f:
+    with open("app/document.docx", 'wb') as f:
         f.write(contents)
-        text = convert_docx_to_plain_text(random_name + '.docx')
+        text = convert_docx_to_plain_text("app/document.docx")
     return {"text": text, "mp3": tts_to_mp3(text)}
 
 
@@ -57,8 +55,7 @@ def docx(file: UploadFile) -> dict[str, str]:
 def pdf(file: UploadFile) -> dict[str, str]:
     """Accept a PDF file name and output the text within it."""
     contents = file.file.read()
-    random_name = random.choice("abcedfghijklmnopqrstuvwxyz%123456783")
-    with open(random_name + '.pdf', 'wb') as f:
+    with open("app/file.pdf", 'wb') as f:
         f.write(contents)
-        text = convert_pdf_to_text(random_name + '.pdf')
+        text = convert_pdf_to_text("app/file.pdf")
     return {"text": text, "mp3": tts_to_mp3(text)}
