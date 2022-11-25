@@ -1,5 +1,6 @@
 """Application entrypoint."""
 
+import random
 from http.client import BAD_REQUEST
 
 from PIL import Image
@@ -42,7 +43,7 @@ def image(file: UploadFile) -> dict[str, str]:
 def docx(file: UploadFile) -> dict[str, str]:
     """Accept a .docx file name and output the text within it."""
     contents = file.file.read()
-    filename = "app/tmp/document.docx"
+    filename = f"app/tmp/{random.getrandbits(32)}.docx"
 
     with open(filename, "wb") as f:
         f.write(contents)
@@ -55,7 +56,7 @@ def docx(file: UploadFile) -> dict[str, str]:
 def pdf(file: UploadFile) -> dict[str, str]:
     """Accept a PDF file name and output the text within it."""
     contents = file.file.read()
-    filename = "app/tmp/file.pdf"
+    filename = f"app/tmp/{random.getrandbits(32)}.pdf"
 
     with open(filename, "wb") as f:
         f.write(contents)

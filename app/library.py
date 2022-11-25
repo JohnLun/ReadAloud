@@ -39,17 +39,17 @@ def convert_pdf_to_text(name: str) -> str:
     pdf_file_obj = open(name, "rb")
 
     # creating a pdf reader object
-    pdf_reader = PyPDF2.PdfFileReader(pdf_file_obj)
+    pdf_reader = PyPDF2.PdfReader(pdf_file_obj)
 
     # printing number of pages in pdf file
-    print(pdf_reader.numPages)
+    print(len(pdf_reader.pages))
 
     # creating a page object
-    page_obj = pdf_reader.getPage(0)
+    page_obj = pdf_reader.pages[0]
 
     # extracting text from page
-    text = page_obj.extractText()
-    print(page_obj.extractText())
+    text = page_obj.extract_text()
+    print(page_obj.extract_text())
 
     # closing the pdf file object
     pdf_file_obj.close()
