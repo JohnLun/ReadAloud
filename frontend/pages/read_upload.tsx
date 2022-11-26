@@ -66,7 +66,7 @@ const read_upload: NextPage = () => {
   const [fileName, setFileName] = useState<string>("");
   const [fileText, setFileText] = useState<string>("");
 
-  const submit = async (
+  const submitFile = async (
     e: ChangeEvent,
     fileRef: React.RefObject<HTMLInputElement>
   ) => {
@@ -96,9 +96,17 @@ const read_upload: NextPage = () => {
     setFileText(resultJson.text);
   };
 
+  // TODO
+  const submitText = async (value: string) => value;
+  const submitURL = async (value: string) => value;
+
   return (
     <div className="bg-papyrus-100 flex mdmax:flex-wrap min-h-screen">
-      <InputPanel submitFile={submit} />
+      <InputPanel
+        submitFile={submitFile}
+        submitText={submitText}
+        submitURL={submitURL}
+      />
       <ResultsPanel fileName={fileName} fileText={fileText} />
     </div>
   );
