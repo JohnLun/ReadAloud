@@ -6,7 +6,7 @@ const options = ["default", "contrast"];
 export const ThemePicker = () => {
   const [mounted, setMounted] = useState(false);
   const [themeIndex, setThemeIndex] = useState<number>(0);
-  const { theme, setTheme } = useTheme();
+  const { setTheme } = useTheme();
 
   useEffect(() => setMounted(true), []);
 
@@ -22,10 +22,11 @@ export const ThemePicker = () => {
         const newIndex = (themeIndex + 1) % options.length;
         setThemeIndex(newIndex);
         setTheme(options[newIndex]);
-        console.log(options[newIndex]);
       }}
     >
-      {options[themeIndex]}
+      Theme:{" "}
+      {options[themeIndex].charAt(0).toUpperCase() +
+        options[themeIndex].slice(1)}
     </button>
   );
 };
