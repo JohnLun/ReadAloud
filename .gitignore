@@ -32,6 +32,9 @@ MANIFEST
 *.manifest
 *.spec
 
+# Ignore a file named "speech.mp3."
+speech.mp3
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
