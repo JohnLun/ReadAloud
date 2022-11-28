@@ -27,6 +27,7 @@ export const TabGroup = (props: TabGroupProps) => {
     <div className="flex grid-cols-3 gap-2">
       {tabs.map((tab: string) => (
         <Tab
+          key={tab}
           value={tab}
           onClick={() => {
             setValue(tab);
