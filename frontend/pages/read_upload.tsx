@@ -1,10 +1,15 @@
 import type { NextPage } from "next";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import React from "react";
+import { User } from "firebase/auth";
 import { TabGroup } from "components/Tab";
 import { UploadArea } from "components/UploadArea";
 import { TextArea } from "components/TextArea";
 import { WebsiteArea } from "components/WebsiteArea";
+import { SignInButton } from "components/SignInButton";
+import { SignOutButton } from "components/SignOutButton";
+import { ThemePicker } from "components/ThemePicker";
+import { UserDisplay } from "components/UserDisplay";
 
 interface InterfacePanelProps {
   submitFile: (
@@ -65,6 +70,14 @@ const ResultsPanel = (props: ResultsPanelProps) => {
 const read_upload: NextPage = () => {
   const [fileName, setFileName] = useState<string>("");
   const [fileText, setFileText] = useState<string>("");
+  const [user, setUser] = useState<User>();
+
+  useEffect(() => {
+    const buffer = localStorage.getItem("user");
+    if (buffer) {
+      setUser(JSON.parse(buffer));
+    }
+  }, []);
 
   const submitFile = async (
     e: ChangeEvent,
@@ -101,13 +114,30 @@ const read_upload: NextPage = () => {
   const submitURL = async (value: string) => value;
 
   return (
-    <div className="bg-papyrus-100 flex mdmax:flex-wrap min-h-screen">
-      <InputPanel
-        submitFile={submitFile}
-        submitText={submitText}
-        submitURL={submitURL}
-      />
-      <ResultsPanel fileName={fileName} fileText={fileText} />
+    <div>
+      <div className="bg-papyrus-100 flex items-center gap-2 border-b-2 border-brown-800 px-2 py-1">
+        <UserDisplay user={user} />
+        {user ? (
+          <SignOutButton
+            onSignOut={() => {
+              alert("You have been signed out.");
+              setUser(undefined);
+            }}
+          />
+        ) : (
+          <SignInButton onSignIn={(user: User) => setUser(user)} />
+        )}
+        <ThemePicker />
+      </div>
+
+      <div className="bg-papyrus-100 flex mdmax:flex-wrap min-h-screen">
+        <InputPanel
+          submitFile={submitFile}
+          submitText={submitText}
+          submitURL={submitURL}
+        />
+        <ResultsPanel fileName={fileName} fileText={fileText} />
+      </div>
     </div>
   );
 };
