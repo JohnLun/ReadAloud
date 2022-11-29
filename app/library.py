@@ -5,7 +5,7 @@ import PyPDF2
 
 import docx
 
-import pyttsx3
+from gtts import gTTS
 
 from tesserocr import PyTessBaseAPI
 
@@ -15,11 +15,9 @@ from tesserocr import PyTessBaseAPI
 
 def tts_to_mp3(text):
     """Save text to .mp3 file with TTS included."""
-    # Initialize the Pyttsx3 engine
-    engine = pyttsx3.init()
-    engine.save_to_file(text, 'app/speech.mp3')
-    # Wait until above command is not finished.
-    engine.runAndWait()
+    # Take in the text desired, the top-level domain and the language desired.
+    mp3_convert = gTTS(text, tld="com", lang="en")
+    mp3_convert.save("speech.mp3")
     with open("app/speech.mp3", "rb") as f:
         final = f.read()
     return final
