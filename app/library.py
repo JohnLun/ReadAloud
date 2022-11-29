@@ -1,5 +1,9 @@
 """Library functions for calling in application code."""
+from bs4 import BeautifulSoup
+
 from PIL import Image
+
+from urllib.request import urlopen
 
 import PyPDF2
 
@@ -61,3 +65,30 @@ def convert_docx_to_plain_text(name) -> str:
     for para in doc.paragraphs:
         full_text.append(para.text)
     return '\n'.join(full_text)
+
+
+def read_website_text(url) -> str:
+    """Convert text within .docx to plain text."""
+    # Make a .get() request for the URL:
+    html = urlopen(url)
+
+    # Parse the HTML:
+    soup = BeautifulSoup(html, 'html.parser')
+    text = soup.get_text()
+    # Kill all script and style elements:
+
+    for script in soup(["script", "style"]):
+        script.extract()  # Remove the script or style.
+
+    # Break the text into lines and remove trailing spaces for each line:
+
+    lines = (line.strip() for line in text.splitlines())
+
+    # Break multiple headlines into a line each:
+    chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
+
+    # Drop any blank lines.
+
+    text = '\n'.join(chunk for chunk in chunks if chunk)
+
+    return text
