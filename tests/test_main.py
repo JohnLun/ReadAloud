@@ -43,7 +43,7 @@ def test_tts_to_text() -> None:
     """Checks that TTS works."""
     assert (
         app.library.tts_to_mp3(app.library.convert_pdf_to_text
-                               ('tests/data/Document.pdf'))
+                               ('app/Document.pdf'))
     )
 
 
@@ -62,8 +62,8 @@ def test_docx() -> None:
                        file=f, content_type="doctest/docx")
         ) == {"text": app.main.convert_docx_to_plain_text(
             'tests/data/doctest.docx'), "mp3":
-                  app.main.tts_to_mp3(app.main.convert_docx_to_plain_text(
-                      'tests/data/doctest.docx'))}
+            app.main.tts_to_mp3(app.main.convert_docx_to_plain_text(
+                'tests/data/doctest.docx'))}
 
 
 def test_pdf() -> None:
@@ -74,6 +74,22 @@ def test_pdf() -> None:
                        content_type="Document/pdf")
         ) == {"text": app.main.convert_pdf_to_text(
             'tests/data/Document.pdf'), "mp3":
-                  app.main.tts_to_mp3(
-                      app.main.convert_pdf_to_text('tests/data/Document.pdf')
-                  )}
+            app.main.tts_to_mp3(
+                app.main.convert_pdf_to_text('tests/data/Document.pdf')
+            )}
+
+
+def test_plain_text() -> None:
+    """Test that plain text can be converted into a .mp3 file."""
+    assert (
+        app.library.tts_to_mp3("The Union of Soviet Socialist Republics "
+                            "was proclaimed on December 30th, 1922.")
+    )
+
+
+def test_website_to_plain_text() -> None:
+    """Test that website text can be parsed and converted to a .mp3 file."""
+    assert (
+        app.library.tts_to_mp3(app.library.read_website_text("https://www.marxists.org/reference/"
+                                    "archive/stalin/works/1945/05/09v.htm"))
+    )
