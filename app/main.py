@@ -11,6 +11,7 @@ from app.library import convert_docx_to_plain_text
 from app.library import convert_image_to_text
 from app.library import convert_pdf_to_text
 from app.library import tts_to_mp3
+from app.library import read_website_text
 
 app = FastAPI()
 
@@ -59,3 +60,15 @@ def pdf(file: UploadFile) -> dict[str, str]:
         f.write(contents)
         text = convert_pdf_to_text("app/file.pdf")
     return {"text": text, "mp3": tts_to_mp3(text)}
+
+
+@app.post("/text")
+def plain_text(text) -> dict[str, str]:
+    """Accept plain text."""
+    return {"text": text, "mp3": tts_to_mp3(text)}
+
+
+@app.post("/url")
+def web(url) -> dict[str, str]:
+    """Accept website URL and parse the text within it."""
+    return {"text": read_website_text(url), "mp3": tts_to_mp3(read_website_text(url))}
