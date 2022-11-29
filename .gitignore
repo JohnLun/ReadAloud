@@ -35,6 +35,12 @@ MANIFEST
 # Ignore a file named "speech.mp3."
 speech.mp3
 
+# Ignore a file named "file.pdf."
+file.pdf
+
+# Ignore a file named "document.docx."
+document.docx
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
