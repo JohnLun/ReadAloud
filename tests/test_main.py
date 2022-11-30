@@ -79,7 +79,7 @@ def test_pdf() -> None:
             )}
 
 
-def test_plain_text() -> None:
+def test_text() -> None:
     """Test that plain text can be converted into a .mp3 file."""
     assert (
         app.library.tts_to_mp3("The "
@@ -89,12 +89,25 @@ def test_plain_text() -> None:
     )
 
 
-def test_website_to_plain_text() -> None:
+def test_plain_text() -> None:
+    """Test that plain text can be converted into a .mp3 file."""
+    assert (
+        app.main.tts_to_mp3(app.library.plain_text("The ""Union of"
+                                                   " Soviet "
+                                                   "Socialist "
+                                                   "Republics"
+                                                   "was "
+                                                   "proclaimed on"
+                                                   " December 30th, "
+                                                   "1922."))
+    )
+
+
+def test_url() -> None:
     """Test that website text can be parsed and converted to a .mp3 file."""
     assert (
-        app.library.tts_to_mp3(app.
-                               library.read_website_text
-                               ("https://www.marxists.org/reference/"
-                                "archive"
-                                "/stalin/works/1945/05/09v.htm"))
+        app.library.read_website_text
+        ("https://www.marxists.org/reference/"
+         "archive"
+         "/stalin/works/1945/05/09v.htm")
     )
