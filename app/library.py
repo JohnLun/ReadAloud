@@ -1,6 +1,4 @@
 """Library functions for calling in application code."""
-import typing
-
 from PIL import Image
 
 from urllib.request import urlopen
@@ -8,6 +6,8 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
 import PyPDF2
+
+import typing
 
 import docx
 
@@ -96,5 +96,5 @@ def read_website_text(url: str) -> typing.Any:
     return text
 
 
-def plain_text(text: str):
+def plain_text(text: str) -> str:
     return text
