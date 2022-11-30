@@ -29,8 +29,9 @@ def test_image() -> None:
     with open("tests/data/test.png", "rb") as f:
         assert app.main.image(
             UploadFile(filename="test.png", file=f, content_type="image/png")
-        ) == {"text": "G Search with Google or enter address\n", "mp3":
-              app.main.tts_to_mp3("G Search with Google or enter address\n")}
+        ) == {"text": "G Search with Google or enter address\n",
+              "mp3": app.main.tts_to_mp3(
+                  "G Search with Google or enter address\n")}
 
 
 def test_image_failure() -> None:
@@ -82,15 +83,9 @@ def test_pdf() -> None:
 
 def test_pdf_to_text() -> None:
     """Test that the PDF can be converted."""
-    with open('tests/data/Document.pdf', "rb") as f:
-        assert app.main.pdf(
-            UploadFile(filename="Document.pdf", file=f,
-                       content_type="Document/pdf")
-        ) == {"text": app.main.convert_pdf_to_text(
-            'tests/data/Document.pdf'), "mp3":
-            app.main.tts_to_mp3(
-                app.main.convert_pdf_to_text('tests/data/Document.pdf')
-            )}
+    assert (
+        app.main.convert_pdf_to_text('tests/data/Document.pdf')
+    )
 
 
 def test_text() -> None:
@@ -100,3 +95,40 @@ def test_text() -> None:
     assert app.main.text(
         test
     ) == {"text": test, "mp3": app.main.tts_to_mp3(test)}
+
+
+# def test_text() -> None:
+#     """Test that plain text can be converted into a .mp3 file."""
+#     test = "The Union of Soviet Socialist Republics was" \
+#            "proclaimed on December 30th, 1922."
+#     assert app.main.text(
+#         test
+#     ) == {"text": test, "mp3": app.main.tts_to_mp3(test)}
+
+# def test_convert_text() -> None:
+#     """Test that plain text can be converted into a .mp3 file."""
+#     test = "The Union of Soviet Socialist Republics was" \
+#            "proclaimed on December 30th, 1922."
+#     assert app.main.text(
+#         test
+#     ) == {"text": app.main.convert_text(test),
+#           "mp3": app.main.tts_to_mp3(app.main.convert_text(test))}
+
+def test_url() -> None:
+    """Test that website text can be parsed and converted to a .mp3 file."""
+    example = "https://www.marxists.org/reference/" \
+              "archive/stalin/works/1945/05/09v.htm"
+    assert app.main.url(
+        example
+    ) == {"text": app.main.convert_website_text(example),
+          "mp3": app.main.tts_to_mp3(
+              app.library.convert_website_text(example))}
+
+
+def test_convert_website_text() -> None:
+    """Test that website text can be parsed and converted to a .mp3 file."""
+    example = "https://www.marxists.org/reference/" \
+              "archive/stalin/works/1945/05/09v.htm"
+    assert (
+        app.library.convert_website_text(example)
+    )
