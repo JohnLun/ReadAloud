@@ -5,9 +5,9 @@ from PIL import Image
 
 import PyPDF2
 
-from bs4 import BeautifulSoup
-
 import typing
+
+from bs4 import BeautifulSoup
 
 import docx
 
@@ -97,4 +97,5 @@ def read_website_text(url: str) -> typing.Any:
 
 
 def plain_text(text: str) -> str:
+    """Take in plain text."""
     return text
