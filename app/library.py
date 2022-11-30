@@ -76,10 +76,6 @@ def convert_website_text(url: str) -> typing.Any:
     # Parse the HTML:
     soup = BeautifulSoup(html, 'html.parser')
     text = soup.get_text()
-    # Kill all script and style elements:
-
-    for script in soup(["script", "style"]):
-        script.extract()  # Remove the script or style.
 
     # Break the text into lines and remove trailing spaces for each line:
 
