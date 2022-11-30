@@ -1,9 +1,9 @@
 """Library functions for calling in application code."""
 from PIL import Image
 
-from bs4 import BeautifulSoup
-
 from urllib.request import urlopen
+
+from bs4 import BeautifulSoup
 
 import PyPDF2
 
@@ -17,7 +17,7 @@ from tesserocr import PyTessBaseAPI
 # Import the required module
 
 
-def tts_to_mp3(text):
+def tts_to_mp3(text: str):
     """Save text to .mp3 file with TTS included."""
     # Take in the text desired, the top-level domain and the language desired.
     mp3_convert = gTTS(text, tld="com", lang="en")
@@ -35,7 +35,7 @@ def convert_image_to_text(image: Image) -> str:
         return text
 
 
-def convert_pdf_to_text(name) -> str:
+def convert_pdf_to_text(name: str) -> str:
     """Convert text within PDF file to plain text."""
     # creating a pdf file object
     pdf_file_obj = open(name, 'rb')
@@ -58,7 +58,7 @@ def convert_pdf_to_text(name) -> str:
     return text
 
 
-def convert_docx_to_plain_text(name) -> str:
+def convert_docx_to_plain_text(name: str) -> str:
     """Convert text within .docx to plain text."""
     doc = docx.Document(name)
     full_text = []
@@ -67,7 +67,7 @@ def convert_docx_to_plain_text(name) -> str:
     return '\n'.join(full_text)
 
 
-def read_website_text(url) -> str:
+def read_website_text(url: str) -> str:
     """Convert text within .docx to plain text."""
     # Make a .get() request for the URL:
     html = urlopen(url)
