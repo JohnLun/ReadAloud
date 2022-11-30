@@ -105,9 +105,11 @@ def test_plain_text() -> None:
 
 def test_url() -> None:
     """Test that website text can be parsed and converted to a .mp3 file."""
-    assert (
-        app.library.read_website_text
-        ("https://www.marxists.org/reference/"
-         "archive"
-         "/stalin/works/1945/05/09v.htm")
-    )
+    example = "https://www.marxists.org/reference/" \
+              "archive/stalin/works/1945/05/09v.htm"
+    assert app.main.url(
+        app.main.read_website_text
+        (example)
+    ) == {"text": app.library.read_website_text(example),
+          "mp3": app.main.tts_to_mp3(
+              app.main.read_website_text(example))}
