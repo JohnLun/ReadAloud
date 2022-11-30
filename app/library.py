@@ -1,7 +1,7 @@
 """Library functions for calling in application code."""
-from bs4 import BeautifulSoup
-
 from PIL import Image
+
+from bs4 import BeautifulSoup
 
 from urllib.request import urlopen
 
