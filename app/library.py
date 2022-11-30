@@ -1,4 +1,6 @@
 """Library functions for calling in application code."""
+import typing
+
 from PIL import Image
 
 from urllib.request import urlopen
@@ -17,7 +19,7 @@ from tesserocr import PyTessBaseAPI
 # Import the required module
 
 
-def tts_to_mp3(text: str):
+def tts_to_mp3(text: str) -> bytes:
     """Save text to .mp3 file with TTS included."""
     # Take in the text desired, the top-level domain and the language desired.
     mp3_convert = gTTS(text, tld="com", lang="en")
@@ -67,7 +69,7 @@ def convert_docx_to_plain_text(name: str) -> str:
     return '\n'.join(full_text)
 
 
-def read_website_text(url: str) -> str:
+def read_website_text(url: str) -> typing.Any:
     """Convert text within .docx to plain text."""
     # Make a .get() request for the URL:
     html = urlopen(url)
@@ -91,4 +93,8 @@ def read_website_text(url: str) -> str:
 
     text = '\n'.join(chunk for chunk in chunks if chunk)
 
+    return text
+
+
+def plain_text(text: str):
     return text
