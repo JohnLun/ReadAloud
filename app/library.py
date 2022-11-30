@@ -3,9 +3,9 @@ from urllib.request import urlopen
 
 from PIL import Image
 
-import PyPDF2
-
 import typing
+
+import PyPDF2
 
 from bs4 import BeautifulSoup
 
