@@ -29,7 +29,8 @@ def test_image() -> None:
     with open("tests/data/test.png", "rb") as f:
         assert app.main.image(
             UploadFile(filename="test.png", file=f, content_type="image/png")
-        ) == {"text": "G Search with Google or enter address\n"}
+        ) == {"text": "G Search with Google or enter address\n", "mp3":
+              app.main.tts_to_mp3("G Search with Google or enter address\n")}
 
 
 def test_image_failure() -> None:
