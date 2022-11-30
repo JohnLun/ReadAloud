@@ -43,7 +43,7 @@ def test_tts_to_text() -> None:
     """Checks that TTS works."""
     assert (
         app.library.tts_to_mp3(app.library.convert_pdf_to_text
-                               ('app/Document.pdf'))
+                               ('tests/data/Document.pdf'))
     )
 
 
@@ -93,8 +93,7 @@ def test_url() -> None:
     example = "https://www.marxists.org/reference/" \
               "archive/stalin/works/1945/05/09v.htm"
     assert app.main.url(
-        app.main.read_website_text
-        (example)
-    ) == {"text": app.library.read_website_text(example),
+        example
+    ) == {"text": app.main.read_website_text(example),
           "mp3": app.main.tts_to_mp3(
               app.main.read_website_text(example))}
