@@ -82,7 +82,7 @@ def test_pdf() -> None:
 def test_pdf_to_text() -> None:
     """Test that the PDF can be converted."""
     with open('tests/data/Document.pdf', "rb") as f:
-        assert (
+        assert app.main.pdf(
             UploadFile(filename="Document.pdf", file=f,
                        content_type="Document/pdf")
         ) == {"text": app.main.convert_pdf_to_text(
@@ -99,25 +99,3 @@ def test_text() -> None:
     assert app.main.text(
         test
     ) == {"text": test, "mp3": app.main.tts_to_mp3(test)}
-
-
-def test_url() -> None:
-    """Test that website text can be parsed and converted to a .mp3 file."""
-    example = "https://www.marxists.org/reference/" \
-              "archive/stalin/works/1945/05/09v.htm"
-    assert app.main.url(
-        example
-    ) == {"text": app.main.read_website_text(example),
-          "mp3": app.main.tts_to_mp3(
-              app.library.read_website_text(example))}
-
-
-def test_read_website_text() -> None:
-    """Test that website text can be parsed and converted to a .mp3 file."""
-    example = "https://www.marxists.org/reference/" \
-              "archive/stalin/works/1945/05/09v.htm"
-    assert app.main.url(
-        example
-    ) == {"text": app.library.read_website_text(example),
-          "mp3": app.library.tts_to_mp3(
-              app.library.read_website_text(example))}
