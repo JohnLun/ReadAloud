@@ -1,6 +1,5 @@
 """Library functions for calling in application code."""
 import typing
-
 from urllib.request import urlopen
 
 from PIL import Image
