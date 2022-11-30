@@ -68,7 +68,7 @@ def convert_docx_to_plain_text(name: str) -> str:
     return '\n'.join(full_text)
 
 
-def read_website_text(url: str) -> typing.Any:
+def convert_website_text(url: str) -> typing.Any:
     """Convert website text to plain text."""
     # Make a .get() request for the URL:
     html = urlopen(url)
