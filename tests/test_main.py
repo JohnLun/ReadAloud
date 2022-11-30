@@ -39,7 +39,7 @@ def test_image_failure() -> None:
             app.main.image(UploadFile(filename="test.png", file=f))
 
 
-def test_tts_to_text() -> None:
+def test_tts_to_mp3() -> None:
     """Checks that TTS works."""
     assert (
         app.library.tts_to_mp3(app.library.convert_pdf_to_text
@@ -79,6 +79,19 @@ def test_pdf() -> None:
             )}
 
 
+def test_pdf_to_text() -> None:
+    """Test that the PDF can be converted."""
+    with open('tests/data/Document.pdf', "rb") as f:
+        assert (
+            UploadFile(filename="Document.pdf", file=f,
+                       content_type="Document/pdf")
+        ) == {"text": app.main.convert_pdf_to_text(
+            'tests/data/Document.pdf'), "mp3":
+            app.main.tts_to_mp3(
+                app.main.convert_pdf_to_text('tests/data/Document.pdf')
+            )}
+
+
 def test_text() -> None:
     """Test that plain text can be converted into a .mp3 file."""
     test = "The Union of Soviet Socialist Republics was" \
@@ -96,4 +109,15 @@ def test_url() -> None:
         example
     ) == {"text": app.main.read_website_text(example),
           "mp3": app.main.tts_to_mp3(
-              app.main.read_website_text(example))}
+              app.library.read_website_text(example))}
+
+
+def test_read_website_text() -> None:
+    """Test that website text can be parsed and converted to a .mp3 file."""
+    example = "https://www.marxists.org/reference/" \
+              "archive/stalin/works/1945/05/09v.htm"
+    assert app.main.url(
+        example
+    ) == {"text": app.library.read_website_text(example),
+          "mp3": app.library.tts_to_mp3(
+              app.library.read_website_text(example))}
