@@ -63,9 +63,9 @@ def pdf(file: UploadFile) -> dict[str, str]:
 
 
 @app.post("/text")
-def text(plain_text: str) -> dict[str, str]:
+def text(text: str) -> dict[str, str]:
     """Accept plain text."""
-    return {"text": plain_text, "mp3": tts_to_mp3(plain_text)}
+    return {"text": text, "mp3": tts_to_mp3(text)}
 
 
 @app.post("/url")
