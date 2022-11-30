@@ -43,7 +43,7 @@ def test_tts_to_text() -> None:
     """Checks that TTS works."""
     assert (
         app.library.tts_to_mp3(app.library.convert_pdf_to_text
-                               ('tests/data/Document.pdf'))
+                               ('app/Document.pdf'))
     )
 
 
@@ -81,26 +81,11 @@ def test_pdf() -> None:
 
 def test_text() -> None:
     """Test that plain text can be converted into a .mp3 file."""
-    assert (
-        app.library.tts_to_mp3("The "
-                               "Union of Soviet Socialist Republics"
-                               "was proclaimed on December 30th, "
-                               "1922.")
-    )
-
-
-def test_plain_text() -> None:
-    """Test that plain text can be converted into a .mp3 file."""
-    assert (
-        app.main.tts_to_mp3(app.library.plain_text("The ""Union of"
-                                                   " Soviet "
-                                                   "Socialist "
-                                                   "Republics"
-                                                   "was "
-                                                   "proclaimed on"
-                                                   " December 30th, "
-                                                   "1922."))
-    )
+    test = "The Union of Soviet Socialist Republics was" \
+           "proclaimed on December 30th, 1922."
+    assert app.main.text(
+        test
+    ) == {"text": test, "mp3": app.main.tts_to_mp3(test)}
 
 
 def test_url() -> None:
