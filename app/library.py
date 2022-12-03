@@ -16,17 +16,16 @@ from gtts import gTTS
 from tesserocr import PyTessBaseAPI
 
 
-# Import the required module
-
-
-def tts_to_mp3(text: str) -> str:
+def tts_to_mp3(text: str) -> bytes:
     """Save text to .mp3 file with TTS included."""
     # Take in the text desired, the top-level domain and the language desired.
     mp3_convert = gTTS(text, tld="com", lang="en")
     mp3_convert.save("speech.mp3")
+
     with open("app/speech.mp3", "rb") as f:
         final = f.read()
         encoded = base64.b64encode(final)
+
     return encoded
 
 
@@ -40,34 +39,33 @@ def convert_image_to_text(image: Image) -> str:
 
 def convert_pdf_to_text(name: str) -> str:
     """Convert text within PDF file to plain text."""
-    # creating a pdf file object
-    pdf_file_obj = open(name, 'rb')
+    # create a pdf file object
+    pdf_file_obj = open(name, "rb")
 
-    # creating a pdf reader object
+    # create a pdf reader object
     pdf_reader = PyPDF2.PdfReader(pdf_file_obj)
 
-    # printing number of pages in pdf file
-    print(len(pdf_reader.pages))
-
-    # creating a page object
+    # create a page object
     page_obj = pdf_reader.pages[0]
 
-    # extracting text from page
+    # extract text from page
     text = page_obj.extract_text()
-    print(page_obj.extract_text())
 
-    # closing the pdf file object
+    # close the pdf file object
     pdf_file_obj.close()
+
     return text
 
 
 def convert_docx_to_plain_text(name: str) -> str:
     """Convert text within .docx to plain text."""
     doc = docx.Document(name)
+
     full_text = []
     for para in doc.paragraphs:
         full_text.append(para.text)
-    return '\n'.join(full_text)
+
+    return "\n".join(full_text)
 
 
 def convert_website_text(url: str) -> typing.Any:
@@ -76,18 +74,16 @@ def convert_website_text(url: str) -> typing.Any:
     html = urlopen(url)
 
     # Parse the HTML:
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, "html.parser")
     text = soup.get_text()
 
     # Break the text into lines and remove trailing spaces for each line:
-
     lines = (line.strip() for line in text.splitlines())
 
     # Break multiple headlines into a line each:
     chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
 
     # Drop any blank lines.
-
-    text = '\n'.join(chunk for chunk in chunks if chunk)
+    text = "\n".join(chunk for chunk in chunks if chunk)
 
     return text
