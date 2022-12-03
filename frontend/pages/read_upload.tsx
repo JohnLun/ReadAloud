@@ -11,15 +11,12 @@ import { SignOutButton } from "components/SignOutButton";
 import { ThemePicker } from "components/ThemePicker";
 import { UserDisplay } from "components/UserDisplay";
 
-const audio_warning = (warning: string) => {
+const playAudioWarning = (warning: string) => {
   if (typeof window !== "undefined") {
     const message = new SpeechSynthesisUtterance();
     message.text = warning;
     message.rate = 1.2;
     window.speechSynthesis.speak(message);
-  } else {
-    //Cannot play audio warning because execution is server-side.
-    console.log(warning);
   }
 };
 
@@ -53,18 +50,25 @@ const InputPanel = (props: InterfacePanelProps) => {
   );
 };
 
+enum uploadStatuses {
+  Idle = "Select a file to begin.",
+  Uploading = "Uploading file. Please wait.",
+  Ready = "Press play to listen.",
+}
+var uploadStatus: uploadStatuses;
+
 interface ResultsPanelProps {
   fileName: string;
   fileText: string;
-  uploadStatus: string;
 }
+
 const ResultsPanel = (props: ResultsPanelProps) => {
   const PlayButton = () => (
     <button
       className="flex justify-center items-center w-48 h-48 rounded-full bg-papyrus-200 hover:bg-papyrus-300 focus:outline-none"
       onClick={async () => {
-        if (props.uploadStatus != "Press play to listen.") {
-          audio_warning(props.uploadStatus);
+        if (uploadStatus != uploadStatuses.Ready) {
+          playAudioWarning(uploadStatus);
         }
       }}
     >
@@ -75,7 +79,7 @@ const ResultsPanel = (props: ResultsPanelProps) => {
     <div className="w-full h-full">
       <div className="px-5">
         <div className="font-bold text-xl text-brown-800 py-3">
-          {props.uploadStatus}
+          {uploadStatus}
         </div>
         <div className="font-bold text-xl text-brown-800 py-2">
           {props.fileName}
@@ -93,10 +97,9 @@ const read_upload: NextPage = () => {
   const [fileName, setFileName] = useState<string>("");
   const [fileText, setFileText] = useState<string>("");
   const [user, setUser] = useState<User>();
-  const [uploadStatus, setUploadStatus] = useState<string>("");
 
   useEffect(() => {
-    setUploadStatus("Select a file to begin.");
+    uploadStatus = uploadStatuses.Idle;
     const buffer = localStorage.getItem("user");
     if (buffer) {
       setUser(JSON.parse(buffer));
@@ -110,14 +113,14 @@ const read_upload: NextPage = () => {
     e.preventDefault();
 
     if (!fileRef.current?.files) {
-      audio_warning("No file selected.");
+      playAudioWarning("No file selected.");
       throw Error("No file selected.");
     }
 
     const data = new FormData();
     data.append("file", fileRef.current.files[0]);
     setFileName(fileRef.current.files[0].name);
-    setUploadStatus("Uploading file. Please wait.");
+    uploadStatus = uploadStatuses.Uploading;
 
     const url = process.env.NEXT_PUBLIC_API_URL + "/image";
     if (!url) {
@@ -131,7 +134,7 @@ const read_upload: NextPage = () => {
     });
     const resultJson = await resultRaw.json();
     setFileText(resultJson.text);
-    setUploadStatus("Press play to listen.");
+    uploadStatus = uploadStatuses.Ready;
   };
 
   // TODO
@@ -161,14 +164,10 @@ const read_upload: NextPage = () => {
           submitText={submitText}
           submitURL={submitURL}
         />
-        <ResultsPanel
-          fileName={fileName}
-          fileText={fileText}
-          uploadStatus={uploadStatus}
-        />
+        <ResultsPanel fileName={fileName} fileText={fileText} />
       </div>
     </div>
   );
 };
-
+uploadStatus = uploadStatuses.Idle;
 export default read_upload;
