@@ -10,7 +10,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.library import convert_docx_to_plain_text
 from app.library import convert_image_to_text
 from app.library import convert_pdf_to_text
-# from app.library import convert_text
 from app.library import convert_website_text
 from app.library import tts_to_mp3
 
