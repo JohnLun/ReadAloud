@@ -1,5 +1,4 @@
 """Library functions for calling in application code."""
-import base64
 import typing
 from urllib.request import urlopen
 
@@ -26,8 +25,7 @@ def tts_to_mp3(text: str) -> bytes:
     mp3_convert.save("speech.mp3")
     with open("app/speech.mp3", "rb") as f:
         final = f.read()
-        encoded = base64.b64encode(final)
-    return encoded
+    return final
 
 
 def convert_image_to_text(image: Image) -> str:
@@ -41,20 +39,20 @@ def convert_image_to_text(image: Image) -> str:
 def convert_pdf_to_text(name: str) -> str:
     """Convert text within PDF file to plain text."""
     # creating a pdf file object
-    pdf_file_obj = open(name, "rb")
+    pdf_file_obj = open(name, 'rb')
 
     # creating a pdf reader object
-    pdf_reader = PyPDF2.PdfFileReader(pdf_file_obj)
+    pdf_reader = PyPDF2.PdfReader(pdf_file_obj)
 
     # printing number of pages in pdf file
-    print(pdf_reader.numPages)
+    print(len(pdf_reader.pages))
 
     # creating a page object
-    page_obj = pdf_reader.getPage(0)
+    page_obj = pdf_reader.pages[0]
 
     # extracting text from page
-    text = page_obj.extractText()
-    print(page_obj.extractText())
+    text = page_obj.extract_text()
+    print(page_obj.extract_text())
 
     # closing the pdf file object
     pdf_file_obj.close()
@@ -67,7 +65,7 @@ def convert_docx_to_plain_text(name: str) -> str:
     full_text = []
     for para in doc.paragraphs:
         full_text.append(para.text)
-    return "\n".join(full_text)
+    return '\n'.join(full_text)
 
 
 def convert_website_text(url: str) -> typing.Any:
@@ -76,8 +74,12 @@ def convert_website_text(url: str) -> typing.Any:
     html = urlopen(url)
 
     # Parse the HTML:
-    soup = BeautifulSoup(html, "html.parser")
+    soup = BeautifulSoup(html, 'html.parser')
     text = soup.get_text()
+    # Kill all script and style elements:
+
+    for script in soup(["script", "style"]):
+        script.extract()  # Remove the script or style.
 
     # Break the text into lines and remove trailing spaces for each line:
 
@@ -88,6 +90,6 @@ def convert_website_text(url: str) -> typing.Any:
 
     # Drop any blank lines.
 
-    text = "\n".join(chunk for chunk in chunks if chunk)
+    text = '\n'.join(chunk for chunk in chunks if chunk)
 
     return text
