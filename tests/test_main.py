@@ -11,6 +11,8 @@ import app.main
 
 document_directory = 'tests/data/Document.pdf'
 docx_directory = 'tests/data/doctest.docx'
+image_directory = "tests/data/test.png"
+image_content = "G Search with Google or enter address\n"
 
 
 def test_root() -> None:
@@ -22,8 +24,8 @@ def test_convert_image_to_text() -> None:
     """Test that the image can be converted."""
     assert (
             app.library.convert_image_to_text(
-                Image.open("tests/data/test.png"))
-            == "G Search with Google or enter address\n"
+                Image.open(image_directory))
+            == image_content
     )
 
 
@@ -32,14 +34,14 @@ def test_image() -> None:
     with open("tests/data/test.png", "rb") as f:
         assert app.main.image(
             UploadFile(filename="test.png", file=f, content_type="image/png")
-        ) == {"text": "G Search with Google or enter address\n",
+        ) == {"text": image_content,
               "mp3": app.library.tts_to_mp3(
-                  "G Search with Google or enter address\n")}
+                  image_content)}
 
 
 def test_image_failure() -> None:
     """Invalid image raises an HTTP Exception."""
-    with open("tests/data/test.png", "rb") as f:
+    with open(image_directory, "rb") as f:
         with pytest.raises(HTTPException):
             app.main.image(UploadFile(filename="test.png", file=f))
 
@@ -67,7 +69,7 @@ def test_convert_docx_to_plain_text() -> None:
 
 def test_docx() -> None:
     """Test that the docx can be converted."""
-    with open("tests/data/doctest.docx", "rb") as f:
+    with open(docx_directory, "rb") as f:
         assert app.main.docx(
             UploadFile(filename="doctest.docx",
                        file=f, content_type="doctest/docx")
@@ -79,7 +81,7 @@ def test_docx() -> None:
 
 def test_pdf() -> None:
     """Test that the PDF can be converted."""
-    with open('tests/data/Document.pdf', "rb") as f:
+    with open(document_directory, "rb") as f:
         assert app.main.pdf(
             UploadFile(filename="Document.pdf", file=f,
                        content_type="Document/pdf")
