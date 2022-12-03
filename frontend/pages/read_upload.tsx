@@ -11,6 +11,18 @@ import { SignOutButton } from "components/SignOutButton";
 import { ThemePicker } from "components/ThemePicker";
 import { UserDisplay } from "components/UserDisplay";
 
+const audio_warning = (warning: string) => {
+  if (typeof window !== "undefined") {
+    const message = new SpeechSynthesisUtterance();
+    message.text = warning;
+    message.rate = 1.2;
+    window.speechSynthesis.speak(message);
+  } else {
+    //Cannot play audio warning because execution is server-side.
+    console.log(warning);
+  }
+};
+
 interface InterfacePanelProps {
   submitFile: (
     e: ChangeEvent,
@@ -41,21 +53,31 @@ const InputPanel = (props: InterfacePanelProps) => {
   );
 };
 
-const PlayButton = () => (
-  <button className="flex justify-center items-center w-48 h-48 rounded-full bg-papyrus-200 hover:bg-papyrus-300 focus:outline-none">
-    <div className="ml-4 w-0 h-0 border-b-transparent border-l-brown-900 border-t-transparent border-r-transparent border-solid border-t-[3rem] border-r-0 border-b-[3rem] border-l-[6rem]"></div>
-  </button>
-);
-
 interface ResultsPanelProps {
   fileName: string;
   fileText: string;
+  uploadStatus: string;
 }
 const ResultsPanel = (props: ResultsPanelProps) => {
+  const PlayButton = () => (
+    <button
+      className="flex justify-center items-center w-48 h-48 rounded-full bg-papyrus-200 hover:bg-papyrus-300 focus:outline-none"
+      onClick={async () => {
+        if (props.uploadStatus != "Press play to listen.") {
+          audio_warning(props.uploadStatus);
+        }
+      }}
+    >
+      <div className="ml-4 w-0 h-0 border-b-transparent border-l-brown-900 border-t-transparent border-r-transparent border-solid border-t-[3rem] border-r-0 border-b-[3rem] border-l-[6rem]"></div>
+    </button>
+  );
   return (
     <div className="w-full h-full">
-      <div className="px-4">
-        <div className="font-bold text-xl text-brown-800 py-10">
+      <div className="px-5">
+        <div className="font-bold text-xl text-brown-800 py-3">
+          {props.uploadStatus}
+        </div>
+        <div className="font-bold text-xl text-brown-800 py-2">
           {props.fileName}
         </div>
         <div className="overflow-y-auto text-brown-800">{props.fileText}</div>
@@ -71,8 +93,10 @@ const read_upload: NextPage = () => {
   const [fileName, setFileName] = useState<string>("");
   const [fileText, setFileText] = useState<string>("");
   const [user, setUser] = useState<User>();
+  const [uploadStatus, setUploadStatus] = useState<string>("");
 
   useEffect(() => {
+    setUploadStatus("Select a file to begin.");
     const buffer = localStorage.getItem("user");
     if (buffer) {
       setUser(JSON.parse(buffer));
@@ -86,12 +110,14 @@ const read_upload: NextPage = () => {
     e.preventDefault();
 
     if (!fileRef.current?.files) {
+      audio_warning("No file selected.");
       throw Error("No file selected.");
     }
 
     const data = new FormData();
     data.append("file", fileRef.current.files[0]);
     setFileName(fileRef.current.files[0].name);
+    setUploadStatus("Uploading file. Please wait.");
 
     const url = process.env.NEXT_PUBLIC_API_URL + "/image";
     if (!url) {
@@ -99,14 +125,13 @@ const read_upload: NextPage = () => {
         "Frontend server error (must set environment variable NEXT_PUBLIC_API_URL)."
       );
     }
-
     const resultRaw = await fetch(url, {
       method: "POST",
       body: data,
     });
     const resultJson = await resultRaw.json();
-
     setFileText(resultJson.text);
+    setUploadStatus("Press play to listen.");
   };
 
   // TODO
@@ -136,7 +161,11 @@ const read_upload: NextPage = () => {
           submitText={submitText}
           submitURL={submitURL}
         />
-        <ResultsPanel fileName={fileName} fileText={fileText} />
+        <ResultsPanel
+          fileName={fileName}
+          fileText={fileText}
+          uploadStatus={uploadStatus}
+        />
       </div>
     </div>
   );
