@@ -22,7 +22,7 @@ export const WebsiteArea = (props: WebsiteAreaProps) => {
       />
       <input
         className="bg-brown-700 text-sm text-white font-bold px-3 py-2 mt-4 rounded-md hover:bg-brown-800 hover:cursor-pointer"
-        type="submit"
+        type="button"
         value="Read this website aloud"
         onClick={() => {
           props.submit(value);

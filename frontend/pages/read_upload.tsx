@@ -119,15 +119,29 @@ const read_upload: NextPage = () => {
 
     const data = new FormData();
     data.append("file", fileRef.current.files[0]);
-    setFileName(fileRef.current.files[0].name);
+    const fN = fileRef.current.files[0].name.toLowerCase();
     uploadStatus = uploadStatuses.Uploading;
-
-    const url = process.env.NEXT_PUBLIC_API_URL + "/image";
+    setFileName(fN);
+    let ext = "";
+    if (
+      fN.endsWith(".png") ||
+      fN.endsWith(".jpeg") ||
+      fN.endsWith(".jpg") ||
+      fN.endsWith(".gif")
+    ) {
+      ext = "/image";
+    } else if (fN.endsWith(".docx")) {
+      ext = "/docx";
+    } else if (fN.endsWith(".pdf")) {
+      ext = "/pdf";
+    }
+    const url = process.env.NEXT_PUBLIC_API_URL + ext;
     if (!url) {
       throw Error(
         "Frontend server error (must set environment variable NEXT_PUBLIC_API_URL)."
       );
     }
+
     const resultRaw = await fetch(url, {
       method: "POST",
       body: data,
@@ -138,8 +152,46 @@ const read_upload: NextPage = () => {
   };
 
   // TODO
-  const submitText = async (value: string) => value;
-  const submitURL = async (value: string) => value;
+  const submitText = async (value: string) => {
+    const url = process.env.NEXT_PUBLIC_API_URL + "/text";
+    if (!url) {
+      throw Error(
+        "Frontend server error (must set environment variable NEXT_PUBLIC_API_URL)."
+      );
+    }
+    const text = value;
+    console.log(text);
+    const resultRaw = await fetch(
+      url +
+        "?" +
+        new URLSearchParams({
+          plain_text: text,
+        }),
+      {
+        method: "POST",
+        body: text,
+      }
+    );
+    const resultJson = await resultRaw.json();
+    setFileText(resultJson.text);
+  };
+
+  const submitURL = async (value: string) => {
+    const url = process.env.NEXT_PUBLIC_API_URL + "/url";
+    const resultRaw = await fetch(
+      url +
+        "?" +
+        new URLSearchParams({
+          url_web: value,
+        }),
+      {
+        method: "POST",
+        body: value,
+      }
+    );
+    const resultJson = await resultRaw.json();
+    setFileText(resultJson.text);
+  };
 
   return (
     <div>

@@ -23,7 +23,7 @@ export const TextArea = (props: TextAreaProps) => {
       ></textarea>
       <input
         className="bg-brown-700 text-sm text-white font-bold px-3 py-2 mt-2 rounded-md hover:bg-brown-800 hover:cursor-pointer"
-        type="submit"
+        type="button"
         value="Read this text aloud"
         onClick={() => {
           props.submit(value);
