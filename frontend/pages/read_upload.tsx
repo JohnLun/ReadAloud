@@ -1,6 +1,5 @@
 import type { NextPage } from "next";
 import { ChangeEvent, useEffect, useState } from "react";
-import React from "react";
 import { User } from "firebase/auth";
 import { TabGroup } from "components/Tab";
 import { UploadArea } from "components/UploadArea";
@@ -37,15 +36,9 @@ const InputPanel = (props: InterfacePanelProps) => {
         <div className="py-2 text-3xl font-bold text-brown-900">ReadAloud</div>
         <TabGroup onChange={(tab: string) => setTab(tab)} />
       </div>
-      {tab === "File Upload" ? (
-        <UploadArea submit={props.submitFile} />
-      ) : tab === "Text" ? (
-        <TextArea submit={props.submitText} />
-      ) : tab === "Website URL" ? (
-        <WebsiteArea submit={props.submitURL} />
-      ) : (
-        ""
-      )}
+      {tab === "File Upload" ? <UploadArea submit={props.submitFile} /> : null};
+      {tab === "Text" ? <TextArea submit={props.submitText} /> : null};
+      {tab === "Website URL" ? <WebsiteArea submit={props.submitURL} /> : null};
     </div>
   );
 };
@@ -93,7 +86,7 @@ const ResultsPanel = (props: ResultsPanelProps) => {
   );
 };
 
-const read_upload: NextPage = () => {
+const useReadUpload: NextPage = () => {
   const [fileName, setFileName] = useState<string>("");
   const [fileText, setFileText] = useState<string>("");
   const [user, setUser] = useState<User>();
@@ -151,7 +144,6 @@ const read_upload: NextPage = () => {
     uploadStatus = uploadStatuses.Ready;
   };
 
-  // TODO
   const submitText = async (value: string) => {
     const url = process.env.NEXT_PUBLIC_API_URL + "/text";
     if (!url) {
@@ -222,4 +214,4 @@ const read_upload: NextPage = () => {
   );
 };
 uploadStatus = uploadStatuses.Idle;
-export default read_upload;
+export default useReadUpload;
