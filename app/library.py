@@ -18,14 +18,15 @@ from tesserocr import PyTessBaseAPI
 # Import the required module
 
 
-def tts_to_mp3(text: str) -> bytes:
+def tts_to_mp3(text: str) -> str:
     """Save text to .mp3 file with TTS included."""
     # Take in the text desired, the top-level domain and the language desired.
     mp3_convert = gTTS(text, tld="com", lang="en")
     mp3_convert.save("speech.mp3")
     with open("app/speech.mp3", "rb") as f:
         final = f.read()
-    return final
+        encoded = base64.b64encode(final)
+    return encoded
 
 
 def convert_image_to_text(image: Image) -> str:
