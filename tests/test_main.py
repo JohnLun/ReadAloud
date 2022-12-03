@@ -9,6 +9,9 @@ import pytest
 import app.library
 import app.main
 
+document_directory = 'tests/data/Document.pdf'
+docx_directory = 'tests/data/doctest.docx'
+
 
 def test_root() -> None:
     """Test the entrypoint's return message."""
@@ -47,31 +50,31 @@ def test_tts_to_mp3() -> None:
             app.library.tts_to_mp3(
                 "This is a test for a PDF file.") ==
             app.library.tts_to_mp3(
-                'tests/data/Document.pdf'
+                document_directory
             )
 
     )
 
 
 def test_convert_docx_to_plain_text() -> None:
-    """Checks that a .docx file is converted to text."""
+    """Checks PDF is converted to text."""
     assert (
             app.library.convert_docx_to_plain_text(
-                'tests/data/doctest.docx') ==
+                docx_directory) ==
             "This is a test for a .docx file."
     )
 
 
 def test_docx() -> None:
-    """Test that the .docx can be converted."""
+    """Test that the docx can be converted."""
     with open("tests/data/doctest.docx", "rb") as f:
         assert app.main.docx(
             UploadFile(filename="doctest.docx",
                        file=f, content_type="doctest/docx")
         ) == {"text": app.library.convert_docx_to_plain_text(
-            'tests/data/doctest.docx'), "mp3":
+            docx_directory), "mp3":
             app.library.tts_to_mp3(app.library.convert_docx_to_plain_text(
-                'tests/data/doctest.docx'))}
+                docx_directory))}
 
 
 def test_pdf() -> None:
@@ -81,9 +84,9 @@ def test_pdf() -> None:
             UploadFile(filename="Document.pdf", file=f,
                        content_type="Document/pdf")
         ) == {"text": app.library.convert_pdf_to_text(
-            'tests/data/Document.pdf'), "mp3":
+            document_directory), "mp3":
             app.library.tts_to_mp3(
-                app.library.convert_pdf_to_text('tests/data/Document.pdf')
+                app.library.convert_pdf_to_text(document_directory)
             )}
 
 
@@ -91,7 +94,7 @@ def test_pdf_to_text() -> None:
     """Test that the PDF can be converted."""
     assert (
             app.library.convert_pdf_to_text(
-                'tests/data/Document.pdf') ==
+                document_directory) ==
             "This is a test for a PDF file.  "
     )
 
