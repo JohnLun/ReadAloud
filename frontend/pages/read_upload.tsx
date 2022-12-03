@@ -214,8 +214,4 @@ const useReadUpload: NextPage = () => {
   );
 };
 uploadStatus = uploadStatuses.Idle;
-<<<<<<< HEAD
 export default useReadUpload;
-=======
-export default read_upload;
->>>>>>> 684a503d94de18f3d21809e5e9c7168bc492939b
