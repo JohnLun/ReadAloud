@@ -55,7 +55,7 @@ enum uploadStatuses {
   Uploading = "Uploading file. Please wait.",
   Ready = "Press play to listen.",
 }
-var uploadStatus: uploadStatuses;
+let uploadStatus: uploadStatuses;
 
 interface ResultsPanelProps {
   fileName: string;
