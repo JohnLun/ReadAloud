@@ -1,4 +1,5 @@
 """Library functions for calling in application code."""
+import base64
 import typing
 from urllib.request import urlopen
 
