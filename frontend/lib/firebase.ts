@@ -1,5 +1,8 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 
+// This configuration is intended by Google Firebase to be public
+// and is not a security risk. For more information, see
+// https://stackoverflow.com/questions/37482366/is-it-safe-to-expose-firebase-apikey-to-the-public
 const firebaseConfig = {
   apiKey: "AIzaSyBZLJvUXX2AjkUfpOHnLIpbguQTTwKj058",
   authDomain: "readaloud-363019.firebaseapp.com",
