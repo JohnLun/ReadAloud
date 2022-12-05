@@ -19,7 +19,7 @@ interface APIResponse {
 }
 
 const ReadUpload: NextPage = () => {
-  const [fileName, setFileName] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
   const [fileText, setFileText] = useState<string>("");
   const [audioBinaryData, setAudioBinaryData] = useState<string>("");
   const [user, setUser] = useState<User>();
@@ -29,7 +29,6 @@ const ReadUpload: NextPage = () => {
 
   // Notify the user that text has been received
   const setFileTextAndReady = (text: string, rawData: string) => {
-    console.log("raw data", rawData);
     // Parse base64 encoded audio data
     // const parsedData = window.atob(rawData);
     setAudioBinaryData(rawData);
@@ -58,7 +57,7 @@ const ReadUpload: NextPage = () => {
 
     // Set file name and upload status
     const filename = fileRef.current.files[0].name.toLowerCase();
-    setFileName(filename);
+    setTitle(filename);
     setUploadStatus(UploadStatus.Uploading);
 
     // Determine backend URL to query
@@ -80,6 +79,9 @@ const ReadUpload: NextPage = () => {
     // Determine backend URL to query
     const url = extendBackendUrl("/text");
 
+    // Set title to "Text"
+    setTitle("Text");
+
     // Perform an HTTP POST request to the backend
     const resultRaw = await fetch(
       url +
@@ -94,12 +96,16 @@ const ReadUpload: NextPage = () => {
     );
     const resultJson = (await resultRaw.json()) as APIResponse;
 
+    // Notify the user that text has been received
     setFileTextAndReady(resultJson.text, resultJson.mp3);
   };
 
   const submitURL = async (value: string) => {
     // Determine backend URL to query
     const url = extendBackendUrl("/url");
+
+    // Set title to the requested URL
+    setTitle(value);
 
     // Perform an HTTP POST request to the backend
     const resultRaw = await fetch(
@@ -145,7 +151,7 @@ const ReadUpload: NextPage = () => {
           submitURL={submitURL}
         />
         <ResultsPanel
-          fileName={fileName}
+          fileName={title}
           fileText={fileText}
           uploadStatus={uploadStatus}
           audioBinaryData={audioBinaryData}
