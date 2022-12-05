@@ -4,6 +4,7 @@ import { PlayButton } from "./PlayButton";
 interface ResultsPanelProps {
   fileName: string;
   fileText: string;
+  audioBinaryData: string;
   uploadStatus: UploadStatus;
 }
 
@@ -19,7 +20,10 @@ export const ResultsPanel = (props: ResultsPanelProps) => {
         </div>
         <div className="overflow-y-auto text-brown-800">{props.fileText}</div>
         <div className="mt-8 mb-8 flex justify-center items-center">
-          <PlayButton uploadStatus={props.uploadStatus} />
+          <PlayButton
+            uploadStatus={props.uploadStatus}
+            audioBinaryData={props.audioBinaryData}
+          />
         </div>
       </div>
     </div>

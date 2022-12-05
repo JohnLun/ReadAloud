@@ -12,16 +12,27 @@ import { extendBackendUrl } from "lib/checkEnvironment";
 import { ResultsPanel } from "components/ResultsPanel";
 import { InputPanel } from "components/InputPanel";
 
+// API response type returned by backend
+interface APIResponse {
+  text: string;
+  mp3: string;
+}
+
 const ReadUpload: NextPage = () => {
-  const [fileName, setFileName] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
   const [fileText, setFileText] = useState<string>("");
+  const [audioBinaryData, setAudioBinaryData] = useState<string>("");
   const [user, setUser] = useState<User>();
   const [uploadStatus, setUploadStatus] = useState<UploadStatus>(
     UploadStatus.IdleFile
   );
 
   // Notify the user that text has been received
-  const setFileTextAndReady = (text: string) => {
+  const setFileTextAndReady = (text: string, rawData: string) => {
+    // Parse base64 encoded audio data
+    // const parsedData = window.atob(rawData);
+    setAudioBinaryData(rawData);
+
     setFileText(text);
     setUploadStatus(UploadStatus.Ready);
     playAudioMessage(UploadStatus.Ready);
@@ -46,7 +57,7 @@ const ReadUpload: NextPage = () => {
 
     // Set file name and upload status
     const filename = fileRef.current.files[0].name.toLowerCase();
-    setFileName(filename);
+    setTitle(filename);
     setUploadStatus(UploadStatus.Uploading);
 
     // Determine backend URL to query
@@ -58,15 +69,18 @@ const ReadUpload: NextPage = () => {
       method: "POST",
       body: data,
     });
-    const resultJson = await resultRaw.json();
+    const resultJson = (await resultRaw.json()) as APIResponse;
 
     // Notify the user that text has been received
-    setFileTextAndReady(resultJson.text);
+    setFileTextAndReady(resultJson.text, resultJson.mp3);
   };
 
   const submitText = async (text: string) => {
     // Determine backend URL to query
     const url = extendBackendUrl("/text");
+
+    // Set title to "Text"
+    setTitle("Text");
 
     // Perform an HTTP POST request to the backend
     const resultRaw = await fetch(
@@ -80,14 +94,18 @@ const ReadUpload: NextPage = () => {
         body: text,
       }
     );
-    const resultJson = await resultRaw.json();
+    const resultJson = (await resultRaw.json()) as APIResponse;
 
-    setFileTextAndReady(resultJson.text);
+    // Notify the user that text has been received
+    setFileTextAndReady(resultJson.text, resultJson.mp3);
   };
 
   const submitURL = async (value: string) => {
     // Determine backend URL to query
     const url = extendBackendUrl("/url");
+
+    // Set title to the requested URL
+    setTitle(value);
 
     // Perform an HTTP POST request to the backend
     const resultRaw = await fetch(
@@ -101,10 +119,10 @@ const ReadUpload: NextPage = () => {
         body: value,
       }
     );
-    const resultJson = await resultRaw.json();
+    const resultJson = (await resultRaw.json()) as APIResponse;
 
     // Notify the user that text has been received
-    setFileTextAndReady(resultJson.text);
+    setFileTextAndReady(resultJson.text, resultJson.mp3);
   };
 
   return (
@@ -133,9 +151,10 @@ const ReadUpload: NextPage = () => {
           submitURL={submitURL}
         />
         <ResultsPanel
-          fileName={fileName}
+          fileName={title}
           fileText={fileText}
           uploadStatus={uploadStatus}
+          audioBinaryData={audioBinaryData}
         />
       </div>
     </div>
