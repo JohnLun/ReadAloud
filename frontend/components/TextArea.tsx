@@ -14,7 +14,7 @@ export const TextArea = (props: TextAreaProps) => {
         </p>
       </div>
       <textarea
-        className="bg-papyrus-300 w-full rounded-lg"
+        className="bg-papyrus-300 w-full rounded-lg p-2"
         onChange={(e: ChangeEvent) =>
           setValue((e.target as HTMLTextAreaElement).value)
         }
