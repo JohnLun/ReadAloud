@@ -16,6 +16,22 @@ from gtts import gTTS
 from tesserocr import PyTessBaseAPI
 
 
+class TextMP3Response(typing.TypedDict):
+    """Type for Text and MP3 Response."""
+
+    text: str
+    mp3: str
+
+
+def make_text_and_mp3_response(text: str) -> TextMP3Response:
+    """Given text, returns a JSON including text and MP3."""
+    # If there is no text, return that there was no text detected
+    if text.strip() == "":
+        text = "Error: no text detected."
+
+    return {"text": text, "mp3": tts_to_mp3(text)}
+
+
 def tts_to_mp3(text: str) -> str:
     """Save text to .mp3 file with TTS included."""
     # Take in the text desired, the top-level domain and the language desired.
