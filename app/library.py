@@ -18,6 +18,10 @@ from tesserocr import PyTessBaseAPI
 
 def tts_to_mp3(text: str) -> str:
     """Save text to .mp3 file with TTS included."""
+    # If there is no text, return that there was no text detected
+    if text.strip() == "":
+        text = "Error: no text detected."
+
     # Take in the text desired, the top-level domain and the language desired.
     mp3_convert = gTTS(text, tld="com", lang="en")
     mp3_convert.save("speech.mp3")
