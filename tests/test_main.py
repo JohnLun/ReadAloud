@@ -28,6 +28,13 @@ def test_root() -> None:
     assert app.main.root() == {"message": "Hello, world!"}
 
 
+def test_make_text_and_mp3_response() -> None:
+    """Test that the make_text_and_mp3_response returns an error."""
+    response = app.library.make_text_and_mp3_response("")
+    assert response["text"] == "Error: no text detected."
+    assert "mp3" in response
+
+
 def test_convert_image_to_text() -> None:
     """Test that the image can be converted."""
     assert (

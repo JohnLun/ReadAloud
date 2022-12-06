@@ -1,5 +1,6 @@
 """Application entrypoint."""
 
+import typing
 from http.client import BAD_REQUEST
 
 from PIL import Image
@@ -11,7 +12,7 @@ from app.library import convert_docx_to_plain_text
 from app.library import convert_image_to_text
 from app.library import convert_pdf_to_text
 from app.library import convert_website_text
-from app.library import tts_to_mp3
+from app.library import make_text_and_mp3_response
 
 app = FastAPI()
 
@@ -25,7 +26,7 @@ def root() -> dict[str, str]:
 
 
 @app.post("/image")
-def image(file: UploadFile) -> dict[str, str]:
+def image(file: UploadFile) -> typing.Any:
     """Accept an image file and output the text within the image."""
     image_content_types = ("image/jpeg", "image/png")
     if file.content_type not in image_content_types:
@@ -37,11 +38,11 @@ def image(file: UploadFile) -> dict[str, str]:
     image_data = Image.open(file.file)
     text = convert_image_to_text(image_data)
 
-    return {"text": text, "mp3": tts_to_mp3(text)}
+    return make_text_and_mp3_response(text)
 
 
 @app.post("/docx")
-def docx(file: UploadFile) -> dict[str, str]:
+def docx(file: UploadFile) -> typing.Any:
     """Accept a .docx file name and output the text within it."""
     contents = file.file.read()
 
@@ -49,11 +50,11 @@ def docx(file: UploadFile) -> dict[str, str]:
         f.write(contents)
         text = convert_docx_to_plain_text("app/document.docx")
 
-    return {"text": text, "mp3": tts_to_mp3(text)}
+    return make_text_and_mp3_response(text)
 
 
 @app.post("/pdf")
-def pdf(file: UploadFile) -> dict[str, str]:
+def pdf(file: UploadFile) -> typing.Any:
     """Accept a PDF file name and output the text within it."""
     contents = file.file.read()
 
@@ -61,22 +62,17 @@ def pdf(file: UploadFile) -> dict[str, str]:
         f.write(contents)
         text = convert_pdf_to_text("app/file.pdf")
 
-    return {"text": text, "mp3": tts_to_mp3(text)}
+    return make_text_and_mp3_response(text)
 
 
 @app.post("/text")
-def text(plain_text: str) -> dict[str, str]:
+def text(plain_text: str) -> typing.Any:
     """Accept plain text."""
-    return {
-        "text": plain_text,
-        "mp3": tts_to_mp3(plain_text),
-    }
+    return make_text_and_mp3_response(plain_text)
 
 
 @app.post("/url")
-def url(url_web: str) -> dict[str, str]:
+def url(url_web: str) -> typing.Any:
     """Accept website URL and parse the text within it."""
-    return {
-        "text": convert_website_text(url_web),
-        "mp3": tts_to_mp3(convert_website_text(url_web)),
-    }
+    website_text = convert_website_text(url_web)
+    return make_text_and_mp3_response(website_text)
